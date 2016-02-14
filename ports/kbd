@@ -1,0 +1,34 @@
+deps=()
+pkgname=kbd
+pkgver=2.0.3
+src="https://www.kernel.org/pub/linux/utils/kbd/kbd-2.0.3.tar.xz"
+website="http://ftp.altlinux.org/pub/people/legion/kbd"
+diskusage="30 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&kbd-backspace-patch;
+sed -i 's/(RESIZECONS_PROGS=)yes/1no/g' configure
+sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --disable-vlock
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+mv -v /usr/bin/{kbd_mode,loadkeys,openvt,setfont} /bin
+mkdir -v /usr/share/doc/kbd-&kbd-version;
+cp -R -v docs/doc/* /usr/share/doc/kbd-&kbd-version;
+}

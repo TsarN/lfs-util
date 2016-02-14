@@ -1,0 +1,30 @@
+deps=()
+pkgname=expat
+pkgver=2.1.0
+src="http://prdownloads.sourceforge.net/expat/expat-2.1.0.tar.gz"
+website="http://expat.sourceforge.net/"
+diskusage="6.6 MB"
+buildtime="0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+install -v -dm755 /usr/share/doc/expat-&expat-version;
+install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-&expat-version;
+}

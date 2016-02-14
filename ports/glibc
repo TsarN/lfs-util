@@ -1,0 +1,36 @@
+deps=()
+pkgname=glibc
+pkgver=2.22
+src="http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz"
+website="http://www.gnu.org/software/libc/"
+diskusage="1.1 GB"
+buildtime="17.4 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&glibc-fhs-patch;
+patch -Np1 -i ../&glibc-upstream-patch;
+patch -Np1 -i ../&glibc-largefile-patch;
+mkdir -v build
+cd build
+../configure --prefix=/usr --disable-profile --enable-kernel=&min-kernel; --enable-obsolete-rpc
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+touch /etc/ld.so.conf
+}
+
+function pkgafterinstall {
+cd $installdir
+make install
+cp -v ../nscd/nscd.conf /etc/nscd.conf
+mkdir -pv /var/cache/nscd
+}

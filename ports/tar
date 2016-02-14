@@ -1,0 +1,30 @@
+deps=()
+pkgname=tar
+pkgver=1.28
+src="http://ftp.gnu.org/gnu/tar/tar-1.28.tar.xz"
+website="http://www.gnu.org/software/tar/"
+diskusage="39 MB"
+buildtime="2.5 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&tar-manpage-patch;
+FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --bindir=/bin
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+make DESTDIR=$installdir -C doc install-html docdir=/usr/share/doc/tar-&tar-version;
+}
+
+function pkgafterinstall {
+cd $installdir
+}

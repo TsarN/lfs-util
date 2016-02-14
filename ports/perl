@@ -1,0 +1,33 @@
+deps=()
+pkgname=perl
+pkgver=5.22.1
+src="http://www.cpan.org/src/5.0/perl-5.22.1.tar.bz2"
+website="http://www.perl.org/"
+diskusage="238 MB"
+buildtime="6.9 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts
+export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+patch -Np1 -i ../&perl-gcc5-fixes-patch;
+sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+unset BUILD_ZLIB BUILD_BZIP2
+}
+
+function pkgafterinstall {
+cd $installdir
+}

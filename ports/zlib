@@ -1,0 +1,30 @@
+deps=()
+pkgname=zlib
+pkgver=1.2.8
+src="http://www.zlib.net/zlib-1.2.8.tar.xz"
+website="http://www.zlib.net/"
+diskusage="4.0 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+mv -v /usr/lib/libz.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
+}

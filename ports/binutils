@@ -1,0 +1,31 @@
+deps=()
+pkgname=binutils
+pkgver=2.26
+src="http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2"
+website="http://www.gnu.org/software/binutils/"
+diskusage="447 MB"
+buildtime="2.3 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&binutils-upstream-patch;
+mkdir -v build
+cd build
+../configure --prefix=/usr --enable-shared --disable-werror
+make tooldir=/usr
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir tooldir=/usr install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

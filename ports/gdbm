@@ -1,0 +1,28 @@
+deps=()
+pkgname=gdbm
+pkgver=1.11
+src="http://ftp.gnu.org/gnu/gdbm/gdbm-1.11.tar.gz"
+website="http://www.gnu.org/software/gdbm/"
+diskusage="9.0 MB"
+buildtime="0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --enable-libgdbm-compat
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,29 @@
+deps=()
+pkgname=diffutils
+pkgver=3.3
+src="http://ftp.gnu.org/gnu/diffutils/diffutils-3.3.tar.xz"
+website="http://www.gnu.org/software/diffutils/"
+diskusage="28 MB"
+buildtime="0.5 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i 's:= @mkdir_p@:= /bin/mkdir -p:' po/Makefile.in.in
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

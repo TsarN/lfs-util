@@ -1,0 +1,27 @@
+deps=()
+pkgname=iana-etc
+pkgver=2.30
+src="http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2"
+website="http://freecode.com/projects/iana-etc"
+diskusage="2.2 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

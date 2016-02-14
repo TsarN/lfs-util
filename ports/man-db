@@ -1,0 +1,28 @@
+deps=()
+pkgname=man-db
+pkgver=2.7.5
+src="http://download.savannah.gnu.org/releases/man-db/man-db-2.7.5.tar.xz"
+website="http://www.nongnu.org/man-db/"
+diskusage="30 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --docdir=/usr/share/doc/man-db-&man-db-version; --sysconfdir=/etc --disable-setuid --with-browser=/usr/bin/lynx --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,32 @@
+deps=()
+pkgname=kmod
+pkgver=22
+src="https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-22.tar.xz"
+website=" "
+diskusage="10.9 MB"
+buildtime="0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --with-xz --with-zlib
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+for target in depmod insmod lsmod modinfo modprobe rmmod; do
+ln -sv ../bin/kmod /sbin/$target
+done
+ln -sv kmod /bin/lsmod
+}
+
+function pkgafterinstall {
+cd $installdir
+}

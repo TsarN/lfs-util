@@ -1,0 +1,30 @@
+deps=()
+pkgname=iproute2
+pkgver=4.4.0
+src="https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-4.4.0.tar.xz"
+website="https://www.kernel.org/pub/linux/utils/net/iproute2/"
+diskusage="9.4 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i /ARPD/d Makefile
+sed -i 's/arpd.8//' man/man8/Makefile
+rm -v doc/arpd.sgml
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir DOCDIR=/usr/share/doc/iproute2-&iproute2-version; install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

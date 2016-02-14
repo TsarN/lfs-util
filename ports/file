@@ -1,0 +1,28 @@
+deps=()
+pkgname=file
+pkgver=5.25
+src="ftp://ftp.astron.com/pub/file/file-5.25.tar.gz"
+website="http://www.darwinsys.com/file/"
+diskusage="14.2 MB"
+buildtime="0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

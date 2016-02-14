@@ -1,0 +1,29 @@
+deps=()
+pkgname=gettext
+pkgver=0.19.7
+src="http://ftp.gnu.org/gnu/gettext/gettext-0.19.7.tar.xz"
+website="http://www.gnu.org/software/gettext/"
+diskusage="190 MB"
+buildtime="7.8 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/gettext-&gettext-version;
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+chmod -v 0755 /usr/lib/preloadable_libintl.so
+}
+
+function pkgafterinstall {
+cd $installdir
+}

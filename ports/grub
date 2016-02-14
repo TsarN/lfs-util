@@ -1,0 +1,28 @@
+deps=()
+pkgname=grub
+pkgver=2.02~beta2
+src="http://alpha.gnu.org/gnu/grub/grub-2.02~beta2.tar.xz"
+website="http://www.gnu.org/software/grub/"
+diskusage="140 MB"
+buildtime="0.9 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sbindir=/sbin --sysconfdir=/etc --disable-grub-emu-usb --disable-efiemu --disable-werror
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

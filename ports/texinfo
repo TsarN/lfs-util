@@ -1,0 +1,29 @@
+deps=()
+pkgname=texinfo
+pkgver=6.1
+src="http://ftp.gnu.org/gnu/texinfo/texinfo-6.1.tar.xz"
+website="http://www.gnu.org/software/texinfo/"
+diskusage="105 MB"
+buildtime="0.6 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+make TEXMF=/usr/share/texmf install-tex
+}

@@ -1,0 +1,30 @@
+deps=()
+pkgname=findutils
+pkgver=4.6.0
+src="http://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz"
+website="http://www.gnu.org/software/findutils/"
+diskusage="28 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --localstatedir=/var/lib/locate
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+mv -v /usr/bin/find /bin
+sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
+}

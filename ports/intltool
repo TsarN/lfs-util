@@ -1,0 +1,30 @@
+deps=()
+pkgname=intltool
+pkgver=0.51.0
+src="http://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz"
+website="http://freedesktop.org/wiki/Software/intltool"
+diskusage="1.2 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i 's:\${:\$\{:' intltool-update.in
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+install -v -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-&intltool-version;/I18N-HOWTO
+}
+
+function pkgafterinstall {
+cd $installdir
+}

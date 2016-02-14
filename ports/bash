@@ -1,0 +1,30 @@
+deps=()
+pkgname=bash
+pkgver=4.3.30
+src="http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz"
+website="http://www.gnu.org/software/bash/"
+diskusage="49 MB"
+buildtime="2.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&bash-fixes-patch;
+./configure --prefix=/usr --docdir=/usr/share/doc/bash-&bash-version; --without-bash-malloc --with-installed-readline
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+mv -vf /usr/bin/bash /bin
+}
+
+function pkgafterinstall {
+cd $installdir
+}

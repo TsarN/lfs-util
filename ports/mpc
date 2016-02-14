@@ -1,0 +1,30 @@
+deps=()
+pkgname=mpc
+pkgver=1.0.3
+src="http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz"
+website="http://www.multiprecision.org/"
+diskusage="17.6 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/mpc-&mpc-version;
+make
+make html
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+make DESTDIR=$installdir install-html
+}
+
+function pkgafterinstall {
+cd $installdir
+}

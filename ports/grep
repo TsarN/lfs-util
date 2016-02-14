@@ -1,0 +1,28 @@
+deps=()
+pkgname=grep
+pkgver=2.23
+src="http://ftp.gnu.org/gnu/grep/grep-2.23.tar.xz"
+website="http://www.gnu.org/software/grep/"
+diskusage="28 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --bindir=/bin
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

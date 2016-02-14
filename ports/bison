@@ -1,0 +1,29 @@
+deps=()
+pkgname=bison
+pkgver=3.0.4
+src="http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.xz"
+website="http://www.gnu.org/software/bison/"
+diskusage="36 MB"
+buildtime="2.6 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i '/lib_LIBRARIES =/d' Makefile.in
+./configure --prefix=/usr --docdir=/usr/share/doc/bison-&bison-version;
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

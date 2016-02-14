@@ -1,0 +1,38 @@
+deps=()
+pkgname=bzip2
+pkgver=1.0.6
+src="http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz"
+website="http://www.bzip.org/"
+diskusage="6.9 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../&bzip2-docs-patch;
+sed -i 's@(ln -s -f )$(PREFIX)/bin/@1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+make -f Makefile-libbz2_so
+make clean
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir PREFIX=/usr install
+}
+
+function pkgafterinstall {
+cd $installdir
+cp -v bzip2-shared /bin/bzip2
+cp -av libbz2.so* /lib
+ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+ln -sv bzip2 /bin/bunzip2
+ln -sv bzip2 /bin/bzcat
+}

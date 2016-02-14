@@ -1,0 +1,33 @@
+deps=()
+pkgname=attr
+pkgver=2.4.47
+src="http://download.savannah.gnu.org/releases/attr/attr-2.4.47.src.tar.gz"
+website="http://www.gnu.org/software/attr/"
+diskusage="3.4 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i -e 's|/@pkg_name@|&amp;-@pkg_version@|' include/builddefs.in
+sed -i -e "/SUBDIRS/s|man2||" man/Makefile
+./configure --prefix=/usr --bindir=/bin --disable-static
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install install-dev install-lib
+chmod -v 755 /usr/lib/libattr.so
+}
+
+function pkgafterinstall {
+cd $installdir
+mv -v /usr/lib/libattr.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
+}

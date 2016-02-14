@@ -1,0 +1,30 @@
+deps=()
+pkgname=procps-ng
+pkgver=3.3.11
+src="http://sourceforge.net/projects/procps-ng/files/Production/procps-ng-3.3.11.tar.xz"
+website="http://sourceforge.net/projects/procps-ng"
+diskusage="14.5 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --exec-prefix= --libdir=/usr/lib --docdir=/usr/share/doc/procps-ng-3.3.11n; --disable-static --disable-kill
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+mv -v /usr/lib/libprocps.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so
+}
