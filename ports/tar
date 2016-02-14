@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-patch -Np1 -i ../&tar-manpage-patch;
+patch -Np1 -i ../tar-1.27.1-manpage1.patch
 FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --bindir=/bin
 make
 }
@@ -22,7 +22,7 @@ make
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
-make DESTDIR=$installdir -C doc install-html docdir=/usr/share/doc/tar-&tar-version;
+make DESTDIR=$installdir -C doc install-html docdir=/usr/share/doc/tar-1.28
 }
 
 function pkgafterinstall {

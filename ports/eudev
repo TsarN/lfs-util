@@ -31,6 +31,6 @@ make DESTDIR=$installdir LD_LIBRARY_PATH=/tools/lib install
 
 function pkgafterinstall {
 cd $installdir
-tar -xvf ../&udev-lfs-version;.tar.bz2
-make -f &udev-lfs-version;/Makefile.lfs install
+tar -xvf ../udev-lfs-20140408.tar.bz2
+make -f udev-lfs-20140408/Makefile.lfs install
 }

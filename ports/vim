@@ -30,5 +30,5 @@ ln -sv vim /usr/bin/vi
 for L in /usr/share/man/{,*/}man1/vim.1; do
 ln -sv vim.1 $(dirname $L)/vi.1
 done
-ln -sv ../&vim-docdir;/doc /usr/share/doc/vim-&vim-version;
+ln -sv ../vim/vim74/doc /usr/share/doc/vim-7.4
 }

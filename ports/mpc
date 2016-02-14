@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/mpc-&mpc-version;
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/mpc-1.0.3
 make
 make html
 }

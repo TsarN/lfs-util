@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/sed-&sed-version;
+./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/sed-4.2.2
 make
 make html
 }

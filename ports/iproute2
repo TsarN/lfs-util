@@ -22,7 +22,7 @@ make
 
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
-make DESTDIR=$installdir DOCDIR=/usr/share/doc/iproute2-&iproute2-version; install
+make DESTDIR=$installdir DOCDIR=$installdir/usr/share/doc/iproute2-4.4.0; install
 }
 
 function pkgafterinstall {

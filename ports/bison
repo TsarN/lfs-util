@@ -15,7 +15,7 @@ function pkgfetch {
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
 sed -i '/lib_LIBRARIES =/d' Makefile.in
-./configure --prefix=/usr --docdir=/usr/share/doc/bison-&bison-version;
+./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.0.4
 make
 }
 

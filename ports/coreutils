@@ -14,8 +14,8 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-patch -Np1 -i ../&coreutils-shuf-segfault-patch;
-patch -Np1 -i ../&coreutils-i18n-patch;
+patch -Np1 -i ../coreutils-8.22-shuf_segfault-1.patch
+patch -Np1 -i ../coreutils-5.93-i18n-2.patch
 FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --enable-no-install-program=kill,uptime
 FORCE_UNSAFE_CONFIGURE=1 make
 }

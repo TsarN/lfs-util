@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-patch -Np1 -i ../&kbd-backspace-patch;
+patch -Np1 -i ../kbd-2.0.3-backspace-1.patch
 sed -i 's/(RESIZECONS_PROGS=)yes/1no/g' configure
 sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
 PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --disable-vlock
@@ -29,6 +29,6 @@ make DESTDIR=$installdir install
 function pkgafterinstall {
 cd $installdir
 mv -v /usr/bin/{kbd_mode,loadkeys,openvt,setfont} /bin
-mkdir -v /usr/share/doc/kbd-&kbd-version;
-cp -R -v docs/doc/* /usr/share/doc/kbd-&kbd-version;
+mkdir -v /usr/share/doc/kbd-2.0.3
+cp -R -v docs/doc/* /usr/share/doc/kbd-2.0.3
 }

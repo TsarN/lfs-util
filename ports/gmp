@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr --enable-cxx --disable-static --docdir=/usr/share/doc/gmp-&gmp-version;
+./configure --prefix=/usr --enable-cxx --disable-static --docdir=/usr/share/doc/gmp-6.1.0
 make
 make html
 }

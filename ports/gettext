@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/gettext-&gettext-version;
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/gettext-0.19.7
 make
 }
 

@@ -25,6 +25,6 @@ make DESTDIR=$installdir install
 
 function pkgafterinstall {
 cd $installdir
-install -v -dm755 /usr/share/doc/expat-&expat-version;
-install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-&expat-version;
+install -v -dm755 /usr/share/doc/expat-2.1.0
+install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-2.1.0
 }
