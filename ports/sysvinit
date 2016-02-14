@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-sed -i 's@Sending processes@&amp; configured via /etc/inittab@g' src/init.c
+sed -i 's@Sending processes@& configured via /etc/inittab@g' src/init.c
 sed -ri -e '/utmpdump/d' -e '/mountpoint/d' -e '/mesg/d' -e 's/= sulogin(.8)?/=/' src/Makefile
 patch -Np1 -i ../&sysvinit-consolidated-patch;
 make -C src

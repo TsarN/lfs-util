@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-echo "127.0.0.1 localhost $(hostname)" &gt; /etc/hosts
+echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 patch -Np1 -i ../&perl-gcc5-fixes-patch;
