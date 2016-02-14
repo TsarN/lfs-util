@@ -20,6 +20,7 @@ make
 }
 
 function pkginstall {
+mkdir -pv /lib
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 mv -v /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin

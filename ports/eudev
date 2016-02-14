@@ -2,6 +2,7 @@ deps=()
 pkgname=eudev
 pkgver=3.1.5
 src="http://dev.gentoo.org/~blueness/eudev/eudev-3.1.5.tar.gz"
+udevsrc="http://anduin.linuxfromscratch.org/LFS/udev-lfs-20140408.tar.bz2"
 website=""
 diskusage="82 MB"
 buildtime="0.3 SBU"
@@ -10,6 +11,10 @@ function pkgfetch {
         wget $src -O /usr/src/$(basename $src)
     fi
     tar -xf /usr/src/$(basename $src) -C $pkgdir
+    if [ ! -f "/usr/src/"$(basename $udevsrc) ]; then
+        wget $src -O /usr/src/$(basename $udevsrc)
+    fi
+    tar -xf /usr/src/$(basename $udevsrc) -C $pkgdir/$pkgname-$pkgver
     }
 
 function pkgmake {
@@ -27,10 +32,9 @@ LIBRARY_PATH=/tools/lib make
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir LD_LIBRARY_PATH=/tools/lib install
+make -f udev-lfs-20140408/Makefile.lfs DESTDIR=$installdir install
 }
 
 function pkgafterinstall {
 cd $installdir
-tar -xvf ../udev-lfs-20140408.tar.bz2
-make -f udev-lfs-20140408/Makefile.lfs install
 }

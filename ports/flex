@@ -21,9 +21,9 @@ make
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
+ln -sv flex $installdir/usr/bin/lex
 }
 
 function pkgafterinstall {
 cd $installdir
-ln -sv flex /usr/bin/lex
 }

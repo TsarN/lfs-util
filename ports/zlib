@@ -19,12 +19,13 @@ make
 }
 
 function pkginstall {
+mkdir -pv /lib
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
+mv -v $installdir/usr/lib/libz.so.* $installdir/lib
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libz.so) $installdir/usr/lib/libz.so
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/lib/libz.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 }

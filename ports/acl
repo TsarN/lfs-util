@@ -22,13 +22,15 @@ make
 }
 
 function pkginstall {
+mkdir -pv /lib
+mkdir -pv /bin
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install install-dev install-lib
 chmod -v 755 /usr/lib/libacl.so
+mv -v $installdir/usr/lib/libacl.so.* $installdir/lib
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libacl.so) $installdir/usr/lib/libacl.so
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/lib/libacl.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
 }

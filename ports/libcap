@@ -19,13 +19,14 @@ make
 }
 
 function pkginstall {
+mkdir -pv /lib
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir RAISE_SETFCAP=no prefix=/usr install
 chmod -v 755 /usr/lib/libcap.so
+mv -v $installdir/usr/lib/libcap.so.* $installdir/lib
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libcap.so) $installdir/usr/lib/libcap.so
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/lib/libcap.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libcap.so) /usr/lib/libcap.so
 }

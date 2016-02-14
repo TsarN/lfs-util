@@ -19,12 +19,13 @@ make
 }
 
 function pkginstall {
+mkdir -pv /lib
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
+mv -v $installdir/usr/lib/libprocps.so.* $installdir/lib
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libprocps.so) $installdir/usr/lib/libprocps.so
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/lib/libprocps.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so
 }

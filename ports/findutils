@@ -20,11 +20,13 @@ make
 
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
+mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
+mkdir -p /bin
+mv -v $installdir/usr/bin/find $installdir/bin
+sed -i 's|find:=${BINDIR}|find:=/bin|' $installdir/usr/bin/updatedb
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/bin/find /bin
-sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
 }

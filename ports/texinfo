@@ -21,9 +21,9 @@ make
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
+make DESTDIR=$installdir TEXMF=/usr/share/texmf install-tex
 }
 
 function pkgafterinstall {
 cd $installdir
-make TEXMF=/usr/share/texmf install-tex
 }

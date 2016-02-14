@@ -20,11 +20,12 @@ make
 
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
+mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
+mv -v $installdir/bin/{gzexe,uncompress,zcmp,zdiff,zegrep} $installdir/usr/bin
+mv -v $installdir/bin/{zfgrep,zforce,zgrep,zless,zmore,znew} $installdir/usr/bin
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /bin/{gzexe,uncompress,zcmp,zdiff,zegrep} /usr/bin
-mv -v /bin/{zfgrep,zforce,zgrep,zless,zmore,znew} /usr/bin
 }

@@ -22,14 +22,15 @@ make SHLIB_LIBS=-lncurses
 }
 
 function pkginstall {
+mkdir -pv /lib
 cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir SHLIB_LIBS=-lncurses install
+mv -v $installdir/usr/lib/lib{readline,history}.so.* $installdir/lib
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libreadline.so) $installdir/usr/lib/libreadline.so
+ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libhistory.so ) $installdir/usr/lib/libhistory.so
+install -v -m644 doc/*.{ps,pdf,html,dvi} $installdir/usr/share/doc/readline-6.3
 }
 
 function pkgafterinstall {
 cd $installdir
-mv -v /usr/lib/lib{readline,history}.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
-ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so
-install -v -m644 doc/*.{ps,pdf,html,dvi} /usr/share/doc/readline-6.3
 }
