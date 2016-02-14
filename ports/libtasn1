@@ -1,0 +1,29 @@
+deps=()
+pkgname=libtasn1
+pkgver=4.7
+src="http://ftp.gnu.org/gnu/libtasn1/libtasn1-4.7.tar.gz"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+make -C doc/reference DESTDIR=$installdir install-data-local
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -2,6 +2,8 @@
 # Gross, LFS package manager
 # Written by Tsarev Nikita, 2016
 
+set -e # Stop at first error
+
 urls=false
 
 function containsElement () {
@@ -48,14 +50,14 @@ function mergepkg {
         echo "No packages to merge, exiting"
         exit
     fi
-    if ! $url; then
+    if ! $urls; then
         echo "Building dependency tree..."
     fi
     for i in "$@"; do
-        g_deptree+=($i)
         builddeptree "/var/lib/gross/db/${i}"
+        g_deptree+=($i)
     done
-    if ! $url; then
+    if ! $urls; then
         echo "About to merge these packages (_DEP for dependency): ${g_deptree[@]}"
         read -p "Are you sure? [y/N] "
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -67,15 +69,13 @@ function mergepkg {
         pkg=`echo "$i" | sed -e "s/\(.*\)_DEP/\1/g"` # Removing _DEP (for dependencies)
         asdep=1
         if [ $i != $pkg ]; then asdep=0; fi;
-        if ! $url; then
-            echo "Installing $pkg, dep=$asdep"
-        fi
+        echo "Installing $pkg, dep=$asdep"
         if ispkginstalled "/var/lib/gross/${i}"; then
             forceunmerge=true
             unmergepkg ${i}
             forceunmerge=false
         fi
-        installpkg "/var/lib/gross/db/${i}" $asdep
+        installpkg "/var/lib/gross/db/${pkg}" $asdep
     done
 }
 
@@ -126,15 +126,24 @@ function unmergepkg {
 g_deptree=() # builddeptree return variable
 
 function builddeptree {
-    filename=$1
+    declare dep
+    declare filename=$1
     if [ -f "$filename" ]; then
-        . "$filename"
-        for dep in $deps; do
-            path="/var/lib/gross/db/${dep}"
-            if ! (containsElement ${dep} ${g_deptree[@]} || containsElement ${dep}_DEP ${g_deptree[@]}); then
-                builddeptree $path
-                g_deptree+=(${dep}_DEP)
-            fi
+        declare flag=true
+        while $flag; do
+            flag=false
+            . "$filename"
+            for dep in ${deps[@]}; do
+                path="/var/lib/gross/db/${dep}"
+                if [[ ! -f /var/lib/gross/${dep} ]]; then
+                    if ! (containsElement ${dep} ${g_deptree[@]} || containsElement ${dep}_DEP ${g_deptree[@]}); then
+                        builddeptree $path
+                        g_deptree+=(${dep}_DEP)
+                        flag=true
+                        break
+                    fi
+                fi 
+            done
         done
     fi
 }
@@ -150,7 +159,7 @@ function buildremtree {
         for rem in $deps; do
             path="/var/lib/gross/db/${rem}"
             if ! (containsElement ${rem} ${g_remtree}); then
-                if ! builddeptree $path; then
+                if ! buildremtree $path; then
                     flag=1
                     break
                 fi

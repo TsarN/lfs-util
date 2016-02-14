@@ -1,0 +1,31 @@
+deps=()
+pkgname=nettle
+pkgver=3.2
+src="https://ftp.gnu.org/gnu/nettle/nettle-3.2.tar.gz"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install &&
+chmod   -v   755 $installdir/usr/lib/lib{hogweed,nettle}.so &&
+install -v -m755 -d $installdir/usr/share/doc/nettle-3.2 &&
+install -v -m644 nettle.html $installdir/usr/share/doc/nettle-3.2
+}
+
+function pkgafterinstall {
+cd $installdir
+}

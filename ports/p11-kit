@@ -1,0 +1,28 @@
+deps=(libtasn1 libffi)
+pkgname=p11-kit
+pkgver=0.23.2
+src=http://p11-glue.freedesktop.org/releases/p11-kit-0.23.2.tar.gz
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

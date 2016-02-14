@@ -1,0 +1,35 @@
+deps=()
+pkgname=libffi
+pkgver=3.2.1
+src="ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "/usr/src/"$(basename $src) ]; then
+        wget $src -O /usr/src/$(basename $src)
+    fi
+    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+-i include/Makefile.in &&
+
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+-e 's/^Cflags: -I${includedir}/Cflags:/' \
+-i libffi.pc.in        &&
+
+./configure --prefix=/usr --disable-static &&
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}
