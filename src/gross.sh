@@ -42,7 +42,7 @@ function installpkg {
     echo "${bold}Running after-install hook${normal}"
     pkgafterinstall
     echo "${bold}Cleaning up...${normal}"
-    rm -rf "$pkgdir $installdir"
+    rm -rf "$pkgdir" "$installdir"
 }
 
 function mergepkg {
