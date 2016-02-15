@@ -32,7 +32,7 @@ mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir PREFIX=/usr install
 cp -v bzip2-shared $installdir/bin/bzip2
 cp -av libbz2.so* $installdir/lib
-ln -sv $intsalldir/lib/libbz2.so.1.0 $installdir/usr/lib/libbz2.so
+ln -sv $installdir/lib/libbz2.so.1.0 $installdir/usr/lib/libbz2.so
 rm -v $installdir/usr/bin/{bunzip2,bzcat,bzip2}
 ln -sv bzip2 $installdir/bin/bunzip2
 ln -sv bzip2 $installdir/bin/bzcat

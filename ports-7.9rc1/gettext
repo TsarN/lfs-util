@@ -20,7 +20,7 @@ make
 
 function pkginstall {
 make DESTDIR=$installdir install
-chmod -v 0755 /usr/lib/preloadable_libintl.so
+chmod -v 0755 $installdir/usr/lib/preloadable_libintl.so
 }
 
 function pkgafterinstall {

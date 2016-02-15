@@ -12,7 +12,7 @@ function pkgfetch {
     fi
     tar -xf /usr/src/$(basename $src) -C $pkgdir
     if [ ! -f "/usr/src/"$(basename $udevsrc) ]; then
-        wget $src -O /usr/src/$(basename $udevsrc)
+        wget $udevsrc -O /usr/src/$(basename $udevsrc)
     fi
     tar -xf /usr/src/$(basename $udevsrc) -C $pkgdir/$pkgname-$pkgver
     }

@@ -25,7 +25,7 @@ function pkginstall {
 mkdir -pv $installdir/lib
 mkdir -pv $installdir/bin
 make DESTDIR=$installdir install install-dev install-lib
-chmod -v 755 /usr/lib/libacl.so
+chmod -v 755 $installdir/usr/lib/libacl.so
 mv -v $installdir/usr/lib/libacl.so.* $installdir/lib
 ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libacl.so) $installdir/usr/lib/libacl.so
 }

@@ -20,7 +20,7 @@ make
 
 function pkginstall {
 make DESTDIR=$installdir install
-make DESTDIR=$installdir -C doc install-html docdir=/usr/share/doc/tar-1.28
+make DESTDIR=$installdir -C doc install-html docdir=$installdir/usr/share/doc/tar-1.28
 }
 
 function pkgafterinstall {

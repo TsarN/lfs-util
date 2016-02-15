@@ -21,7 +21,7 @@ make
 function pkginstall {
 make DESTDIR=$installdir install
 for target in depmod insmod lsmod modinfo modprobe rmmod; do
-ln -sv ../bin/kmod /sbin/$target
+ln -sv $installdir/bin/kmod $installdir/sbin/$target
 done
 ln -sv kmod /bin/lsmod
 }
