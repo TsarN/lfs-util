@@ -7,16 +7,16 @@ website="http://www.gnu.org/software/libc/"
 diskusage="1.1 GB"
 buildtime="17.4 SBU"
 function pkgfetch {
-    if [ ! -f "/usr/src/"$(basename $src) ]; then
-        wget $src -O /usr/src/$(basename $src)
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
     fi
     for patch in ${patchsrc[@]}; do 
-        if [ -f "/usr/src/"$(basename $patch) ]; then
-            wget $patch -O /usr/src/$(basename $patch)
+        if [ -f "${sourcedir}/"$(basename $patch) ]; then
+            wget $patch -O ${sourcedir}/$(basename $patch)
         fi
-        cp /usr/src/$(basename $patch) $pkgdir
+        cp ${sourcedir}/$(basename $patch) $pkgdir
     done
-    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
     }
 
 function pkgmake {

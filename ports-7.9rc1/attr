@@ -6,10 +6,10 @@ website="http://www.gnu.org/software/attr/"
 diskusage="3.4 MB"
 buildtime="less than 0.1 SBU"
 function pkgfetch {
-    if [ ! -f "/usr/src/"$(basename $src) ]; then
-        wget $src -O /usr/src/$(basename $src)
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
     fi
-    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
     }
 
 function pkgmake {

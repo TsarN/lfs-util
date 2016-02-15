@@ -7,14 +7,14 @@ website=""
 diskusage="82 MB"
 buildtime="0.3 SBU"
 function pkgfetch {
-    if [ ! -f "/usr/src/"$(basename $src) ]; then
-        wget $src -O /usr/src/$(basename $src)
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
     fi
-    tar -xf /usr/src/$(basename $src) -C $pkgdir
-    if [ ! -f "/usr/src/"$(basename $udevsrc) ]; then
-        wget $src -O /usr/src/$(basename $udevsrc)
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    if [ ! -f "${sourcedir}/"$(basename $udevsrc) ]; then
+        wget $src -O ${sourcedir}/$(basename $udevsrc)
     fi
-    tar -xf /usr/src/$(basename $udevsrc) -C $pkgdir/$pkgname-$pkgver
+    tar -xf ${sourcedir}/$(basename $udevsrc) -C $pkgdir/$pkgname-$pkgver
     }
 
 function pkgmake {

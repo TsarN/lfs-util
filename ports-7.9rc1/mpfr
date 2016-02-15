@@ -7,14 +7,14 @@ website="http://www.mpfr.org/"
 diskusage="46 MB"
 buildtime="0.8 SBU"
 function pkgfetch {
-    if [ ! -f "/usr/src/"$(basename $src) ]; then
-        wget $src -O /usr/src/$(basename $src)
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
     fi
-    if [ -f "/usr/src/"$(basename $patchsrc) ]; then
-        wget $patchsrc -O /usr/src/$(basename $patchsrc)
+    if [ -f "${sourcedir}/"$(basename $patchsrc) ]; then
+        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
     fi
-    cp /usr/src/$(basename $patchsrc) $pkgdir
-    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    cp ${sourcedir}/$(basename $patchsrc) $pkgdir
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
     }
 
 function pkgmake {
