@@ -25,9 +25,9 @@ make
 }
 
 function pkginstall {
-mkdir -pv /bin
+mkdir -pv $installdir/bin
 make DESTDIR=$installdir install
-mv -vf /usr/bin/bash /bin
+mv -vf $installdir/usr/bin/bash $installdir/bin
 }
 
 function pkgafterinstall {
