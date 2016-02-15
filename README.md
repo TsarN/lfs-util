@@ -7,10 +7,13 @@ This package contains some useful tools for Linux From Scratch.
 ## How to install
 In Chapter 6, just before chrooting, run
 
-    # ./install.sh $LFS
+    # ./install-<LFS version>.sh $LFS
 
 ## Files
 - /usr/bin/gross - Gross
 - /usr/sbin/service - serivce
 - /usr/share/bootscripts - BLFS Bootscripts
 - /var/lib/gross/db - LFS SVN build scripts (2016-02-09)
+
+## Supported versions:
+- LFS 7.9rc1

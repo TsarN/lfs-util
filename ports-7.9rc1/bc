@@ -2,6 +2,7 @@ deps=()
 pkgname=bc
 pkgver=1.06.95
 src="http://alpha.gnu.org/gnu/bc/bc-1.06.95.tar.bz2"
+patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/bc-1.06.95-memory_leak-1.patch"
 website="http://www.gnu.org/software/bc/"
 diskusage="3.6 MB"
 buildtime="0.2 SBU"
@@ -9,6 +10,10 @@ function pkgfetch {
     if [ ! -f "/usr/src/"$(basename $src) ]; then
         wget $src -O /usr/src/$(basename $src)
     fi
+    if [ ! -f "/usr/src/$(basename $patchsrc)"; then
+        wget $patchsrc -O /usr/src/$(basename $patchsrc)
+    fi
+    cp /usr/src/$(basename $patchsrc) $pkgdir
     tar -xf /usr/src/$(basename $src) -C $pkgdir
     }
 

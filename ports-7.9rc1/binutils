@@ -2,6 +2,7 @@ deps=()
 pkgname=binutils
 pkgver=2.26
 src="http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2"
+patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/binutils-2.26-upstream_fix-1.patch"
 website="http://www.gnu.org/software/binutils/"
 diskusage="447 MB"
 buildtime="2.3 SBU"
@@ -9,6 +10,10 @@ function pkgfetch {
     if [ ! -f "/usr/src/"$(basename $src) ]; then
         wget $src -O /usr/src/$(basename $src)
     fi
+    if [ ! -f "/usr/src/$(basename $patchsrc)"; then
+        wget $patchsrc -O /usr/src/$(basename $patchsrc)
+    fi
+    cp /usr/src/$(basename $patchsrc) $pkgdir
     tar -xf /usr/src/$(basename $src) -C $pkgdir
     }
 

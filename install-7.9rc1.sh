@@ -5,4 +5,4 @@ mkdir -pv $1/usr/share/bootscripts
 cp -rv bootscripts/* $1/usr/share/bootscripts/
 rm -vrf /tmp/bootscripts /tmp/bootscripts.tar.bz2
 mkdir -pv $1/var/lib/gross/db
-cp -rv ports/* $1/var/lib/gross/db/
+cp -rv ports-7.9rc1/* $1/var/lib/gross/db/

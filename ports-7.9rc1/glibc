@@ -2,6 +2,7 @@ deps=()
 pkgname=glibc
 pkgver=2.22
 src="http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz"
+patchsrc=("http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/glibc-2.22-fhs-1.patch" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/glibc-2.22-upstream_i386_fix-1.patch" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/glibc-2.22-largefile-1.patch")
 website="http://www.gnu.org/software/libc/"
 diskusage="1.1 GB"
 buildtime="17.4 SBU"
@@ -9,6 +10,12 @@ function pkgfetch {
     if [ ! -f "/usr/src/"$(basename $src) ]; then
         wget $src -O /usr/src/$(basename $src)
     fi
+    for patch in ${patchsrc[@]}; do 
+        if [ -f "/usr/src/"$(basename $patch) ]; then
+            wget $patch -O /usr/src/$(basename $patch)
+        fi
+        cp /usr/src/$(basename $patch) $pkgdir
+    done
     tar -xf /usr/src/$(basename $src) -C $pkgdir
     }
 
