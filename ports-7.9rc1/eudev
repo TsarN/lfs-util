@@ -30,7 +30,6 @@ LIBRARY_PATH=/tools/lib make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir LD_LIBRARY_PATH=/tools/lib install
 make -f udev-lfs-20140408/Makefile.lfs DESTDIR=$installdir install
 }

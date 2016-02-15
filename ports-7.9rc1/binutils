@@ -27,7 +27,6 @@ make tooldir=/usr
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir tooldir=/usr install
 }
 

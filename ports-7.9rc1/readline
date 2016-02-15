@@ -28,7 +28,6 @@ make SHLIB_LIBS=-lncurses
 
 function pkginstall {
 mkdir -pv /lib
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir SHLIB_LIBS=-lncurses install
 mv -v $installdir/usr/lib/lib{readline,history}.so.* $installdir/lib
 ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libreadline.so) $installdir/usr/lib/libreadline.so

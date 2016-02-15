@@ -20,7 +20,6 @@ find dest/include \( -name .install -o -name ..install.cmd \) -delete
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 cp -rv dest/include/* /usr/include
 }
 

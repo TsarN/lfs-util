@@ -20,7 +20,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
 mv -v $installdir/usr/bin/{hostname,ping,ping6,traceroute} $installdir/bin

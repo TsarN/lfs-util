@@ -21,7 +21,6 @@ make
 
 function pkginstall {
 mkdir -pv /lib
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 mv -v $installdir/usr/lib/libncursesw.so.6* $installdir/lib
 ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libncursesw.so) $installdir/usr/lib/libncursesw.so

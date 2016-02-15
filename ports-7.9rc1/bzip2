@@ -28,7 +28,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir PREFIX=/usr install
 cp -v bzip2-shared $installdir/bin/bzip2

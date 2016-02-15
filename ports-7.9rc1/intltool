@@ -20,7 +20,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 install -v -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-0.51.0/I18N-HOWTO
 }

@@ -27,7 +27,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
 mv -v $installdir/usr/bin/{kbd_mode,loadkeys,openvt,setfont} $installdir/bin

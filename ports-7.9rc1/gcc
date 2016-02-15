@@ -21,7 +21,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver/build
 make DESTDIR=$installdir install
 ln -sv ../usr/bin/cpp $installdir/lib
 ln -sv gcc $installdir/usr/bin/cc

@@ -19,7 +19,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 make -C doc/reference DESTDIR=$installdir install-data-local
 }

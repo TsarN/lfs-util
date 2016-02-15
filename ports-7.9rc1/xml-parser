@@ -20,7 +20,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$tarballname-$pkgver
 make DESTDIR=$installdir install
 }
 

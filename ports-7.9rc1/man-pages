@@ -17,7 +17,6 @@ cd $pkgdir/$pkgname-$pkgver
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 }
 

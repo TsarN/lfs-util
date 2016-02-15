@@ -26,7 +26,6 @@ make -C src
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir -C src install
 }
 

@@ -31,7 +31,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver/build
 touch /etc/ld.so.conf
 make DESTDIR=$install install
 cp -v ../nscd/nscd.conf $installdir/etc/nscd.conf

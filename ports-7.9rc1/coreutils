@@ -25,7 +25,6 @@ FORCE_UNSAFE_CONFIGURE=1 make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
 mv -v $installdir/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $installdir/bin

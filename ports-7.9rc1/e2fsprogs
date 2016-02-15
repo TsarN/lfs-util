@@ -21,7 +21,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver/build
 make DESTDIR=$installdir install
 make DESTDIR=$installdir install-libs
 chmod -v u+w $installdir/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a

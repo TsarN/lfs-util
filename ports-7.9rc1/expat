@@ -19,7 +19,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 install -v -dm755 $installdir/usr/share/doc/expat-2.1.0
 install -v -m644 doc/*.{html,png,css} $installdir/usr/share/doc/expat-2.1.0

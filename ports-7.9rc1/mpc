@@ -20,7 +20,6 @@ make html
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 make DESTDIR=$installdir install-html
 }

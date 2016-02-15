@@ -22,7 +22,6 @@ make
 }
 
 function pkginstall {
-cd $pkgdir/$pkgname-$pkgver
 make DESTDIR=$installdir install
 unset BUILD_ZLIB BUILD_BZIP2
 }
