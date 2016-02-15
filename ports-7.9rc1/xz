@@ -6,10 +6,10 @@ website="http://tukaani.org/xz"
 diskusage="15.1 MB"
 buildtime="0.3 SBU"
 function pkgfetch {
-    if [ ! -f "/usr/src/"$(basename $src) ]; then
-        wget $src -O /usr/src/$(basename $src)
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
     fi
-    tar -xf /usr/src/$(basename $src) -C $pkgdir
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
     }
 
 function pkgmake {

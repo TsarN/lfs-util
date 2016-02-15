@@ -4,6 +4,8 @@
 
 set -e # Stop at first error
 
+. /etc/gross
+
 urls=false
 
 function containsElement () {
@@ -23,6 +25,10 @@ function installpkg {
     pkgdir="/var/tmp/gross/$pkgname-$pkgver"
     mkdir -p "$pkgdir"
     installdir="/var/tmp/gross/$pkgname-$pkgver-install"
+    read -p "Do you want to edit build script? [y/N] "
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        ${EDITOR:-vim} "$filename"
+    fi
     . "$filename"
     echo "${bold}Downloading package...${normal}"
     pkgfetch &&
@@ -112,7 +118,7 @@ function unmergepkg {
         fi
     fi
     for i in "$@"; do
-        . "/var/lib/gross/${i}"
+        . "${dbdir}/${i}"
         for (( idx=${#files[@]}-1 ; idx>=0 ; idx-- )) ; do
             if [[ -d ${files[idx]} ]]; then
                 rmdir --ignore-fail-on-non-empty -- "${files[idx]}"
