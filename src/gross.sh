@@ -126,6 +126,7 @@ function unmergepkg {
                 rm -v -f -- "${files[idx]}"
             fi
         done
+        rm -v -f -- "${dbdir}/${i}"
     done
 }
 
