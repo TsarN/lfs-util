@@ -23,7 +23,7 @@ function pkginstall {
 mkdir -pv $installdir/lib
 make DESTDIR=$installdir install
 mv -v $installdir/usr/lib/libncursesw.so.6* $installdir/lib
-ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libncursesw.so) $installdir/usr/lib/libncursesw.so
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libncursesw.so) $installdir/usr/lib/libncursesw.so
 for lib in ncurses form panel menu ; do
 rm -vf $installdir/usr/lib/lib${lib}.so
 echo "INPUT(-l${lib}w)" > $installdir/usr/lib/lib${lib}.so

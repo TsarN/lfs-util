@@ -10,7 +10,7 @@ function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
     fi
-    if [ -f "${sourcedir}/"$(basename $patchsrc) ]; then
+    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
         wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
     fi
     cp ${sourcedir}/$(basename $patchsrc) $pkgdir
@@ -30,8 +30,8 @@ function pkginstall {
 mkdir -pv $installdir/lib
 make DESTDIR=$installdir SHLIB_LIBS=-lncurses install
 mv -v $installdir/usr/lib/lib{readline,history}.so.* $installdir/lib
-ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libreadline.so) $installdir/usr/lib/libreadline.so
-ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libhistory.so ) $installdir/usr/lib/libhistory.so
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libreadline.so) $installdir/usr/lib/libreadline.so
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libhistory.so ) $installdir/usr/lib/libhistory.so
 install -v -m644 doc/*.{ps,pdf,html,dvi} $installdir/usr/share/doc/readline-6.3
 }
 

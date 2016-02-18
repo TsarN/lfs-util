@@ -23,7 +23,7 @@ mkdir -pv $installdir/lib
 make DESTDIR=$installdir RAISE_SETFCAP=no prefix=/usr install
 chmod -v 755 $installdir/usr/lib/libcap.so
 mv -v $installdir/usr/lib/libcap.so.* $installdir/lib
-ln -sfv $installdir/lib/$(readlink $installdir/usr/lib/libcap.so) $installdir/usr/lib/libcap.so
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libcap.so) $installdir/usr/lib/libcap.so
 }
 
 function pkgafterinstall {
