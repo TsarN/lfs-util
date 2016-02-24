@@ -16,4 +16,5 @@ In Chapter 6, just before chrooting, run
 - /var/lib/gross/db - LFS SVN build scripts (2016-02-09)
 
 ## Supported versions:
-- LFS 7.9rc1
+- LFS 7.9-rc1
+- LFS 7.9-rc2

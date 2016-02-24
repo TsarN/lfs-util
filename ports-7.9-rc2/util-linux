@@ -1,0 +1,29 @@
+deps=()
+pkgname=util-linux
+pkgver=2.27.1
+src="https://www.kernel.org/pub/linux/utils/util-linux/v2.27/util-linux-2.27.1.tar.xz"
+website="http://freecode.com/projects/util-linux"
+diskusage="137 MB"
+buildtime="0.8 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+mkdir -pv $installdir/var/lib/hwclock
+sed -e 's/2^64/(2^64/' -e 's/E </E) <=/' -e 's/ne /eq /' -i tests/ts/ipcs/limits2
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/util-linux-2.27.1 --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --without-systemd --without-systemdsystemunitdir
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

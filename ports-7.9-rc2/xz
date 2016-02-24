@@ -1,0 +1,32 @@
+deps=()
+pkgname=xz
+pkgver=5.2.2
+src="http://tukaani.org/xz/xz-5.2.2.tar.xz"
+website="http://tukaani.org/xz"
+diskusage="15.1 MB"
+buildtime="0.3 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -e '/mf.buffer = NULL/a next->coder->mf.size = 0;' -i src/liblzma/lz/lz_encoder.c
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/xz-5.2.2
+make
+}
+
+function pkginstall {
+mkdir -pv $installdir/{,usr}/{lib,bin}
+make DESTDIR=$installdir install
+mv -v $installdir/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $installdir/bin
+mv -v $installdir/usr/lib/liblzma.so.* $installdir/lib
+ln -svf ../../lib/$(readlink $installdir/usr/lib/liblzma.so) $installdir/usr/lib/liblzma.so
+}
+
+function pkgafterinstall {
+cd $installdir
+}

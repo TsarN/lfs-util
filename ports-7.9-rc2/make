@@ -1,0 +1,27 @@
+deps=()
+pkgname=make
+pkgver=4.1
+src="http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2"
+website="http://www.gnu.org/software/make/"
+diskusage="12.2 MB"
+buildtime="0.6 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

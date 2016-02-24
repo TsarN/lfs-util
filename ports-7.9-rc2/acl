@@ -1,0 +1,35 @@
+deps=()
+pkgname=acl
+pkgver=2.2.52
+src="http://download.savannah.gnu.org/releases/acl/acl-2.2.52.src.tar.gz"
+website=" "
+diskusage="5.0 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
+sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" libacl/__acl_to_any_text.c
+./configure --prefix=/usr --bindir=/bin --disable-static --libexecdir=/usr/lib
+make
+}
+
+function pkginstall {
+mkdir -pv $installdir/lib
+mkdir -pv $installdir/bin
+make DESTDIR=$installdir install install-dev install-lib
+chmod -v 755 $installdir/usr/lib/libacl.so
+mv -v $installdir/usr/lib/libacl.so.* $installdir/lib
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libacl.so) $installdir/usr/lib/libacl.so
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,31 @@
+deps=()
+pkgname=inetutils
+pkgver=1.9.4
+src="http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz"
+website="http://www.gnu.org/software/inetutils/"
+diskusage="28 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+echo '#define PATH_PROCNET_DEV "/proc/net/dev"' >> ifconfig/system/linux.h
+./configure --prefix=/usr --localstatedir=/var --disable-logger --disable-whois --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-servers
+make
+}
+
+function pkginstall {
+mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
+make DESTDIR=$installdir install
+mv -v $installdir/usr/bin/{hostname,ping,ping6,traceroute} $installdir/bin
+mv -v $installdir/usr/bin/ifconfig $installdir/sbin
+}
+
+function pkgafterinstall {
+cd $installdir
+}

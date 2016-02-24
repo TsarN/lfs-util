@@ -1,0 +1,29 @@
+deps=()
+    pkgname=sed
+pkgver=4.2.2
+src="http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.bz2"
+website="http://www.gnu.org/software/sed/"
+diskusage="10.9 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/sed-4.2.2
+make
+make html
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+make DESTDIR=$installdir -C doc install-html
+}
+
+function pkgafterinstall {
+cd $installdir
+}

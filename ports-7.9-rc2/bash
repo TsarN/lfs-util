@@ -1,0 +1,35 @@
+deps=()
+pkgname=bash
+pkgver=4.3.30
+src="http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz"
+patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/bash-4.3.30-upstream_fixes-2.patch"
+website="http://www.gnu.org/software/bash/"
+diskusage="49 MB"
+buildtime="2.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    if [ ! -f "${sourcedir}/$(basename $patchsrc)"; then
+        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
+    fi
+    cp ${sourcedir}/$(basename $patchsrc) $pkgdir
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../bash-4.3.30-upstream_fixes-2.patch
+./configure --prefix=/usr --docdir=/usr/share/doc/bash-4.3.30 --without-bash-malloc --with-installed-readline
+make
+}
+
+function pkginstall {
+mkdir -pv $installdir/bin
+make DESTDIR=$installdir install
+mv -vf $installdir/usr/bin/bash $installdir/bin
+}
+
+function pkgafterinstall {
+cd $installdir
+}

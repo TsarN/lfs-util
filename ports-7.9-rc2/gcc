@@ -1,0 +1,35 @@
+deps=()
+pkgname=gcc
+pkgver=5.3.0
+src="http://ftp.gnu.org/gnu/gcc/gcc-5.3.0/gcc-5.3.0.tar.bz2"
+website="http://gcc.gnu.org/"
+diskusage="3.2 GB "
+buildtime="82 SBU (with tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+mkdir -v build
+cd build
+SED=sed ../configure --prefix=/usr --enable-languages=c,c++ --disable-multilib --disable-bootstrap --with-system-zlib
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+ln -sv ../usr/bin/cpp $installdir/lib
+ln -sv gcc $installdir/usr/bin/cc
+install -v -dm755 $installdir/usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/5.3.0/liblto_plugin.so $installdir/usr/lib/bfd-plugins/
+mkdir -pv $installdir/usr/share/gdb/auto-load/usr/lib
+mv -v $installdir/usr/lib/*gdb.py $installdir/usr/share/gdb/auto-load/usr/lib
+}
+
+function pkgafterinstall {
+cd $installdir
+}

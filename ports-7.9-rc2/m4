@@ -1,0 +1,27 @@
+deps=()
+pkgname=m4
+pkgver=1.4.17
+src="http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz"
+website="http://www.gnu.org/software/m4/"
+diskusage="35 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}
