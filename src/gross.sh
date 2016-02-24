@@ -7,6 +7,9 @@ set -e # Stop at first error
 . /etc/gross
 
 urls=false
+noinstall=false
+noclean=false
+noconfirm=false
 
 function containsElement () {
     local e
@@ -25,30 +28,40 @@ function installpkg {
     pkgdir="/var/tmp/gross/$pkgname-$pkgver"
     mkdir -p "$pkgdir"
     installdir="/var/tmp/gross/$pkgname-$pkgver-install"
-    read -p "Do you want to edit build script? [y/N] "
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        ${EDITOR:-vim} "$filename"
+    if ! $noconfirm; then
+        read -p "Do you want to edit build script? [y/N] "
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            ${EDITOR:-vim} "$filename"
+        fi
     fi
     . "$filename"
     echo "${bold}Downloading package...${normal}"
-    pkgfetch &&
+    pkgfetch
     echo "${bold}Compiling package...${normal}"
-    pkgmake &&
-    echo "${bold}Registering package...${normal}"
-    pkginstall && 
-    cat $filename > "/var/lib/gross/$pkgname"
-    echo "files=(" >> "/var/lib/gross/$pkgname"
-    cd "$installdir" && (for i in **; do # Whitespace-safe and recursive
-        echo \"/$i\" >> "/var/lib/gross/$pkgname"
-    done)
-    echo ")" >> "/var/lib/gross/$pkgname"
-    echo "asdep=$2" >> "/var/lib/gross/$pkgname"
-    echo "${bold}Installing package...${normal}"
-    (cd $installdir && tar -cf - *) | (cd /; tar -xvf -)
-    echo "${bold}Running after-install hook${normal}"
-    pkgafterinstall
-    echo "${bold}Cleaning up...${normal}"
-    rm -rf "$pkgdir" "$installdir"
+    pkgmake
+    if ! $noinstall; then
+        echo "${bold}Registering package...${normal}"
+        pkginstall 
+        cat $filename > "/var/lib/gross/$pkgname"
+        echo "files=(" >> "/var/lib/gross/$pkgname"
+        cd "$installdir" && (for i in **; do # Whitespace-safe and recursive
+            echo \"/$i\" >> "/var/lib/gross/$pkgname"
+        done)
+        echo ")" >> "/var/lib/gross/$pkgname"
+        echo "asdep=$2" >> "/var/lib/gross/$pkgname"
+        echo "${bold}Installing package...${normal}"
+        (cd $installdir && tar -cf - *) | (cd /; tar -xvf -)
+        echo "${bold}Running after-install hook${normal}"
+        pkgafterinstall
+    else
+        echo "${bold}Skipped installation${normal}"
+    fi
+    if ! $noclean; then
+        echo "${bold}Cleaning up...${normal}"
+        rm -rf "$pkgdir" "$installdir"
+    else
+        echo "${bold}Skipped cleaning up${normal}"
+    fi
 }
 
 function mergepkg {
@@ -63,7 +76,7 @@ function mergepkg {
         builddeptree "/var/lib/gross/db/${i}"
         g_deptree+=($i)
     done
-    if ! $urls; then
+    if ! $noconfirm; then
         echo "About to merge these packages (_DEP for dependency): ${g_deptree[@]}"
         read -p "Are you sure? [y/N] "
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -202,6 +215,12 @@ for arg in "${@:1}"; do
         usage=true
     elif [[ $arg = "--show-urls" ]]; then
         urls=true
+    elif [[ $arg = "--noinstall" ]]; then
+        noinstall=true
+    elif [[ $arg = "--noclean" ]]; then
+        noclean=true
+    elif [[ $arg = "--noconfirm" ]]; then
+        noconfirm=true
     else
         arguments+=($arg)
     fi
