@@ -11,7 +11,8 @@ function pkgfetch {
         wget $src -O ${sourcedir}/$(basename $src)
     fi
     for patch in ${patchsrc[@]}; do 
-        if [ -f "${sourcedir}/"$(basename $patch) ]; then
+        echo "patch ${sourcedir}/$(basename $patch)"
+        if [ ! -f "${sourcedir}/"$(basename $patch) ]; then
             wget $patch -O ${sourcedir}/$(basename $patch)
         fi
         cp ${sourcedir}/$(basename $patch) $pkgdir
@@ -32,7 +33,7 @@ make
 
 function pkginstall {
 touch $installdir/etc/ld.so.conf
-make DESTDIR=$install install
+make DESTDIR=$installdir install
 cp -v ../nscd/nscd.conf $installdir/etc/nscd.conf
 mkdir -pv $installdir/var/cache/nscd
 }

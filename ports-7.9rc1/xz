@@ -24,7 +24,7 @@ mkdir -pv $installdir/{,usr}/{lib,bin}
 make DESTDIR=$installdir install
 mv -v $installdir/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $installdir/bin
 mv -v $installdir/usr/lib/liblzma.so.* $installdir/lib
-ln -svf $installdir/lib/$(readlink $installdir/usr/lib/liblzma.so) $installdir/usr/lib/liblzma.so
+ln -svf ../../lib/$(readlink $installdir/usr/lib/liblzma.so) $installdir/usr/lib/liblzma.so
 }
 
 function pkgafterinstall {

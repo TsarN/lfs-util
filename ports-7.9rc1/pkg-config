@@ -1,10 +1,10 @@
 deps=()
-pkgname=zlib
-pkgver=1.2.8
-src="http://www.zlib.net/zlib-1.2.8.tar.xz"
-website="http://www.zlib.net/"
-diskusage="4.0 MB"
-buildtime="less than 0.1 SBU"
+pkgname=pkg-config
+pkgver=0.29
+src="http://pkgconfig.freedesktop.org/releases/pkg-config-0.29.tar.gz"
+website="http://www.freedesktop.org/wiki/Software/pkg-config"
+diskusage="29 MB"
+buildtime="0.3 SBU"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
@@ -14,15 +14,12 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr
+./configure --prefix=/usr --with-internal-glib --disable-host-tool --docdir=/usr/share/doc/pkg-config-0.29
 make
 }
 
 function pkginstall {
-mkdir -pv $installdir/lib
 make DESTDIR=$installdir install
-mv -v $installdir/usr/lib/libz.so.* $installdir/lib
-ln -sfv ../../lib/$(readlink $installdir/usr/lib/libz.so) $installdir/usr/lib/libz.so
 }
 
 function pkgafterinstall {
