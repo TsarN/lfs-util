@@ -31,6 +31,7 @@ mv -v $installdir/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $installdir
 mv -v $installdir/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $installdir/bin
 mv -v $installdir/usr/bin/{rmdir,stty,sync,true,uname} $installdir/bin
 mv -v $installdir/usr/bin/chroot $installdir/usr/sbin
+mkdir -pv $installdir/usr/share/man/man8
 mv -v $installdir/usr/share/man/man1/chroot.1 $installdir/usr/share/man/man8/chroot.8
 sed -i s/"1"/"8"/1 $installdir/usr/share/man/man8/chroot.8
 mv -v $installdir/usr/bin/{head,sleep,nice,test,[} $installdir/bin

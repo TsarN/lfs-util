@@ -30,7 +30,7 @@ function pkginstall {
 mkdir -pv $installdir/{,s}bin $installdir/usr/{,s}bin
 make DESTDIR=$installdir install
 mv -v $installdir/usr/bin/{kbd_mode,loadkeys,openvt,setfont} $installdir/bin
-mkdir -v $installdir/usr/share/doc/kbd-2.0.3
+mkdir -vp $installdir/usr/share/doc/kbd-2.0.3
 cp -R -v docs/doc/* $installdir/usr/share/doc/kbd-2.0.3
 }
 

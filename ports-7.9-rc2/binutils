@@ -2,7 +2,7 @@ deps=()
 pkgname=binutils
 pkgver=2.26
 src="http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2"
-patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/binutils-2.26-upstream_fix-1.patch"
+patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc2/binutils-2.26-upstream_fix-2.patch"
 website="http://www.gnu.org/software/binutils/"
 diskusage="447 MB"
 buildtime="2.3 SBU"
@@ -19,7 +19,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-patch -Np1 -i ../binutils-2.26-upstream_fix-1.patch
+patch -Np1 -i ../binutils-2.26-upstream_fix-2.patch
 mkdir -v build
 cd build
 ../configure --prefix=/usr --enable-shared --disable-werror

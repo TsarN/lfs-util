@@ -20,7 +20,7 @@ make
 
 function pkginstall {
 make DESTDIR=$installdir install
-mkdir -v $installdir/usr/share/doc/gawk-4.1.3
+mkdir -vp $installdir/usr/share/doc/gawk-4.1.3
 cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} $installdir/usr/share/doc/gawk-4.1.3
 }
 

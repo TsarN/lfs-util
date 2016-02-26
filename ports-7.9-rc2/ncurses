@@ -32,7 +32,7 @@ done
 rm -vf $installdir/usr/lib/libcursesw.so
 echo "INPUT(-lncursesw)" > $installdir/usr/lib/libcursesw.so
 ln -sfv libncurses.so $installdir/usr/lib/libcurses.so
-mkdir -v $installdir/usr/share/doc/ncurses-6.0
+mkdir -pv $installdir/usr/share/doc/ncurses-6.0
 cp -v -R doc/* $installdir/usr/share/doc/ncurses-6.0
 }
 

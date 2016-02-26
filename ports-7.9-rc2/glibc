@@ -28,6 +28,7 @@ make
 }
 
 function pkginstall {
+mkdir -pv $installdir/etc
 touch $installdir/etc/ld.so.conf
 make DESTDIR=$installdir install
 cp -v ../nscd/nscd.conf $installdir/etc/nscd.conf

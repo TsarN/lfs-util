@@ -21,7 +21,7 @@ make
 }
 
 function pkginstall {
-make DESTDIR=$installdir DOCDIR=/usr/share/doc/iproute2-4.4.0; install
+make DESTDIR=$installdir DOCDIR=/usr/share/doc/iproute2-4.4.0 install
 }
 
 function pkgafterinstall {

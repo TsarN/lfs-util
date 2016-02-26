@@ -13,7 +13,7 @@ function pkgfetch {
     }
 
 function pkgmake {
-cd $pkgdir/$pkgname-$pkgver
+cd $pkgdir/vim74
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 ./configure --prefix=/usr
 make
@@ -25,6 +25,7 @@ ln -sv vim $installdir/usr/bin/vi
 for L in $installdir/usr/share/man/{,*/}man1/vim.1; do
 ln -sv vim.1 $(dirname $L)/vi.1
 done
+mkdir -pv $installdir/usr/share/doc
 ln -sv ../vim/vim74/doc $installdir/usr/share/doc/vim-7.4
 }
 

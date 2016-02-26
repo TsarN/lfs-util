@@ -14,7 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-echo "Groff expects the environment variable PAGE to contain the default paper size. For users in the United States, PAGE=letter is appropriate. Elsewhere, PAGE=A4 may be more suitable. While the default paper size is configured during compilation, it can be overridden later by echoing either “A4” or “letter” to the /etc/papersize file."
+echo "Groff expects the environment variable PAGE to contain the default paper size. For users in the United States, PAGE=letter is appropriate. Elsewhere, PAGE=A4 may be more suitable. While the default paper size is configured during compilation, it can be overridden later by echoing either "A4" or "letter" to the /etc/papersize file."
 echo "Choose default paper size: "
 select paper in "A4" "letter"; do
     if [ -z "$paper" ]; then
