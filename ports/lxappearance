@@ -1,0 +1,30 @@
+deps=(gtk2 dbus-glib)
+pkgname=lxappearance
+pkgver=0.6.2
+src="http://downloads.sourceforge.net/lxde/lxappearance-0.6.2.tar.xz"
+website=
+diskusage="4.4 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr     \
+--sysconfdir=/etc \
+--disable-static  \
+--enable-dbus     &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

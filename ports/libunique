@@ -1,0 +1,38 @@
+deps=(gtk2 gobject-introspection)
+pkgname=libunique
+pkgver=1.1.6
+src="http://ftp.gnome.org/pub/gnome/sources/libunique/1.1/libunique-1.1.6.tar.bz2"
+patchsrc="http://www.linuxfromscratch.org/patches/blfs/svn/libunique-1.1.6-upstream_fixes-1.patch"
+website=
+diskusage="7.0 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+
+    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
+        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
+    fi
+    cp -rv ${sourcedir}/$(basename $patchsrc) $pkgdir/
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../libunique-1.1.6-upstream_fixes-1.patch &&
+autoreconf -fi &&
+
+./configure --prefix=/usr  \
+            --disable-dbus \
+            --disable-static &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

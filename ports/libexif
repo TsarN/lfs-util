@@ -1,0 +1,29 @@
+deps=()
+pkgname=libexif
+pkgver=0.6.21
+src="http://downloads.sourceforge.net/libexif/libexif-0.6.21.tar.bz2"
+website=
+diskusage="17 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+            --with-doc-dir=/usr/share/doc/libexif-0.6.21 \
+            --disable-static &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

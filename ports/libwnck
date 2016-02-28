@@ -1,0 +1,29 @@
+deps=(gtk2 startup-notification)
+pkgname=libwnck
+pkgver=2.30.7
+src="ftp://ftp.gnome.org/pub/gnome/sources/libwnck/2.30/libwnck-2.30.7.tar.xz"
+website=
+diskusage="16 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+--disable-static \
+--program-suffix=-1 &&
+make GETTEXT_PACKAGE=libwnck-1
+}
+
+function pkginstall {
+make GETTEXT_PACKAGE=libwnck-1 DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

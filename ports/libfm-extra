@@ -1,0 +1,31 @@
+deps=(glib)
+pkgname=libfm-extra
+pkgver=1.2.4
+src="http://downloads.sourceforge.net/pcmanfm/libfm-1.2.4.tar.xz"
+website=
+diskusage="11 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/libfm-$pkgver
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --with-extra-only \
+            --with-gtk=no     \
+            --disable-static  &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

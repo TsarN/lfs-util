@@ -1,0 +1,27 @@
+deps=(python2 cairo)
+pkgname=py2cairo
+pkgver=1.10.0
+src="http://cairographics.org/releases/py2cairo-1.10.0.tar.bz2"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./waf configure --prefix=$installdir/usr &&
+./waf build
+}
+
+function pkginstall {
+./waf install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

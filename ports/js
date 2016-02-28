@@ -1,0 +1,38 @@
+deps=(libffi nspr python2 zip)
+pkgname=js
+pkgver=17.0.0
+src="http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.tar.gz"
+website=
+diskusage="1.2 GB"
+buildtime="2.0 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/*
+cd js/src &&
+
+sed -i 's/(defined\((@TEMPLATE_FILE)\))/\1/' config/milestone.pl &&
+
+./configure --prefix=/usr       \
+            --enable-readline   \
+            --enable-threadsafe \
+            --with-system-ffi   \
+            --with-system-nspr &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+find /usr/include/js-17.0/            \
+     /usr/lib/libmozjs-17.0.a         \
+     /usr/lib/pkgconfig/mozjs-17.0.pc \
+     -type f -exec chmod -v 644 {} \;
+}

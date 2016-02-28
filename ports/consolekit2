@@ -1,0 +1,35 @@
+deps=(dbus-glib xorg-libraries polkit)
+pkgname=consolekit2
+pkgver=1.0.1
+src="https://github.com/Consolekit2/ConsoleKit2/releases/download/1.0.1/ConsoleKit2-1.0.1.tar.bz2"
+website=
+diskusage="16 MB"
+buildtime="0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/ConsoleKit2-$pkgver
+./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --enable-udev-acl    \
+            --enable-polkit      \
+            --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d \
+            --docdir=/usr/share/doc/ConsoleKit-1.0.1           \
+            --with-systemdsystemunitdir=no                     &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mv -v $installdir/etc/X11/app-defaults/xinitrc.d/90-consolekit{,.sh}
+}
+
+function pkgafterinstall {
+cd $installdir
+}

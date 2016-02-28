@@ -1,0 +1,32 @@
+deps=(nasm)
+pkgname=libjpeg-turbo
+pkgver=1.4.2
+src="http://downloads.sourceforge.net/libjpeg-turbo/libjpeg-turbo-1.4.2.tar.gz"
+website=
+diskusage="15 MB"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i -e '/^docdir/ s:$:/libjpeg-turbo-1.4.2:' Makefile.in &&
+
+./configure --prefix=/usr           \
+            --mandir=/usr/share/man \
+            --with-jpeg8            \
+            --disable-static &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

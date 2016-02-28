@@ -1,0 +1,36 @@
+deps=(glib js gobject-introspection)
+pkgname=polkit
+pkgver=0.113
+src="http://www.freedesktop.org/software/polkit/releases/polkit-0.113.tar.gz"
+website=
+diskusage="15 MB"
+buildtime="0.2 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+groupadd -fg 27 polkitd &&
+useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
+        -g polkitd -s /bin/false polkitd
+
+./configure --prefix=/usr    \
+--sysconfdir=/etc            \
+--localstatedir=/var         \
+--disable-static             \
+--enable-libsystemd-login=no \
+--with-authfw=shadow         &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}
