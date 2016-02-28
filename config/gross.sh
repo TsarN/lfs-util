@@ -1,2 +1,2 @@
-sourcedir=/usr/src
+sourcedir=/sources
 dbdir=/var/lib/gross

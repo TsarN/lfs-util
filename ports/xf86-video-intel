@@ -1,0 +1,27 @@
+deps=(xcb-util xorg-server)
+pkgname=xf86-video-intel
+pkgver="dev.0340718"
+src="http://anduin.linuxfromscratch.org/BLFS/xf86-video-intel/xf86-video-intel-0340718.tar.xz"
+website=
+diskusage="86 MB"
+buildtime="0.7 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname
+./configure $XORG_CONFIG --enable-kms-only --enable-uxa 
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

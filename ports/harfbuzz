@@ -1,0 +1,27 @@
+deps=(glib icu)
+pkgname=harfbuzz
+pkgver=1.1.3
+src="http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.3.tar.bz2"
+website=
+diskusage="53 MB (with tests)"
+buildtime="0.4 SBU (with tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --with-gobject &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,29 @@
+deps=(libpng pixman fontconfig glib xorg-libraries)
+pkgname=cairo
+pkgver=1.14.6
+src="http://cairographics.org/releases/cairo-1.14.6.tar.xz"
+website=
+diskusage="144 MB"
+buildtime="0.8 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr    \
+            --disable-static \
+            --enable-tee 
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

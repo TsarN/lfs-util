@@ -1,0 +1,27 @@
+deps=(glib)
+pkgname=desktop-file-utils
+pkgver=0.22
+src="http://freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.22.tar.xz"
+website=
+diskusage="2.3 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

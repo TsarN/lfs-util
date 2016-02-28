@@ -1,0 +1,29 @@
+deps=()
+pkgname=libnl
+pkgver=3.2.27
+src="https://github.com/thom311/libnl/releases/download/libnl3_2_27/libnl-3.2.27.tar.gz"
+website=
+diskusage="74 MB (with tests and API documentation)"
+buildtime="0.4 SBU (with tests and API documentation)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static  &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

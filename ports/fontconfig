@@ -1,0 +1,31 @@
+deps=(freetype)
+pkgname=fontconfig
+pkgver=2.11.1
+src="http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.11.1.tar.bz2"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --disable-docs       \
+            --docdir=/usr/share/doc/fontconfig-2.11.1 &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

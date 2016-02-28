@@ -1,0 +1,48 @@
+deps=(openssl pixman xorg-fonts xkeyboard-config libepoxy xcb-util-keysums)
+pkgname=xorg-server
+pkgver=1.18.1
+src="http://ftp.x.org/pub/individual/xserver/xorg-server-1.18.1.tar.bz2"
+patchsrc=("http://www.linuxfromscratch.org/patches/blfs/svn/xorg-server-1.18.1-add_prime_support-1.patch" http://www.linuxfromscratch.org/patches/blfs/svn/xorg-server-1.18.1-wayland_190-1.patch)
+website=
+diskusage="544 MB (with tests)"
+buildtime="1.8 SBU (with tests)"
+function pkgfetch {
+if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+    wget $src -O ${sourcedir}/$(basename $src)
+fi
+tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+
+for isrc in ${patchsrc[@]}; do
+    if [ ! -f "${sourcedir}/"$(basename $isrc) ]; then
+        wget $isrc -O ${sourcedir}/$(basename $isrc)
+    fi
+    cp -rv "${sourcedir}/$(basename $isrc)" "$pkgdir"
+done
+}
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../xorg-server-1.18.1-add_prime_support-1.patch
+patch -Np1 -i ../xorg-server-1.18.1-wayland_190-1.patch
+./configure $XORG_CONFIG            \
+           --enable-glamor          \
+           --enable-install-setuid  \
+           --enable-suid-wrapper    \
+           --disable-systemd-logind \
+           --with-xkb-output=/var/lib/xkb &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install &&
+mkdir -pv $installdir/etc/X11/xorg.conf.d &&
+mkdir -pv $installdir/etc/sysconfig
+cat >> $installdir/etc/sysconfig/createfiles << "EOF"
+/tmp/.ICE-unix dir 1777 root root
+/tmp/.X11-unix dir 1777 root root
+EOF
+}
+
+function pkgafterinstall {
+cd $installdir
+}

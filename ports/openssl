@@ -1,0 +1,35 @@
+deps=()
+pkgname=openssl
+pkgver=1.0.2f
+src="https://openssl.org/source/openssl-1.0.2f.tar.gz"
+website=""
+diskusage="49 MB"
+buildtime="1.0 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./config --prefix=/usr         \
+         --openssldir=/etc/ssl \
+         --libdir=lib          \
+         shared                \
+         zlib-dynamic &&
+make
+}
+
+function pkginstall {
+sed -i 's# libcrypto.a##;s# libssl.a##' Makefile
+make MANDIR=/usr/share/man MANSUFFIX=ssl DESTDIR=$installdir install &&
+install -dv -m755 $installdir/usr/share/doc/openssl-1.0.2f  &&
+cp -vfr doc/*     $installdir/usr/share/doc/openssl-1.0.2f
+}
+
+function pkgafterinstall {
+cd $installdir
+}
+

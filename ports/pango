@@ -1,0 +1,27 @@
+deps=(fontconfig harfbuzz glib cairo xorg-libraries)
+pkgname=pango
+pkgver=1.38.1
+src="http://ftp.gnome.org/pub/gnome/sources/pango/1.38/pango-1.38.1.tar.xz"
+website=
+diskusage="27 MB (additional 2 MB to rebuild and install the API documentation)"
+buildtime="0.4 SBU (additional 0.1 SBU to rebuild and install the API documentation)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

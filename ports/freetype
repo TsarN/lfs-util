@@ -1,0 +1,40 @@
+deps=(libpng which)
+pkgname=freetype
+pkgver=2.6.3
+src="http://downloads.sourceforge.net/freetype/freetype-2.6.3.tar.bz2"
+website=
+diskusage="43 MB (with additional documentation)"
+buildtime="0.2 SBU (with additional documentation)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -e "/AUX.*.gxvalid/s@^# @@" \
+    -e "/AUX.*.otvalid/s@^# @@" \
+    -i modules.cfg              &&
+
+sed -r -e 's:.*(#.*SUBPIXEL.*) .*:\1:' \
+    -i include/freetype/config/ftoption.h  &&
+
+./configure --prefix=/usr --disable-static &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+install -v -m755 -d $installdir/usr/share/doc/freetype-2.6.3 &&
+cp -v -R docs/*     $installdir/usr/share/doc/freetype-2.6.3
+}
+
+function pkgafterinstall {
+if [ -z "`gross list-installed | grep ^harfbuzz`" ]; then
+    echo "Building Harfbuzz now"
+    gross merge harfbuzz
+    gross merge freetype
+fi
+}

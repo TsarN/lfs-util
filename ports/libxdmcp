@@ -1,0 +1,27 @@
+deps=(xorg-protocol-headers)
+pkgname=libdmcp
+pkgver=1.1.2
+src="http://ftp.x.org/pub/individual/lib/libXdmcp-1.1.2.tar.bz2"
+website=
+diskusage="2.6 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/libXdmcp-$pkgver
+./configure $XORG_CONFIG &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

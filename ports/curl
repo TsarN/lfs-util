@@ -1,0 +1,36 @@
+deps=()
+pkgname=curl
+pkgver=7.47.1
+src="https://curl.haxx.se/download/curl-7.47.1.tar.lzma"
+website=
+diskusage="56 MB (with tests)"
+buildtime="0.4 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --enable-threaded-resolver
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+cp -a docs docs-save
+rm -rf docs/examples/.deps
+
+find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \;
+mkdir -vp $installdir/usr/share/doc
+install -v -d -m755 $installdir/usr/share/doc/curl-7.47.1
+cp -v -R docs/* $installdir/usr/share/doc/curl-7.47.1
+rm -rf docs
+mv -i docs-save doc
+}
+
+function pkgafterinstall {
+cd $installdir
+}

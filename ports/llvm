@@ -1,0 +1,80 @@
+deps=(libffi python2)
+pkgname=llvm
+pkgver=3.7.1
+src="http://llvm.org/releases/3.7.1/llvm-3.7.1.src.tar.xz"
+src_clang="http://llvm.org/releases/3.7.1/cfe-3.7.1.src.tar.xz"
+src_rt="http://llvm.org/releases/3.7.1/compiler-rt-3.7.1.src.tar.xz"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+    wget $src -O ${sourcedir}/$(basename $src)
+fi
+if [ ! -f "${sourcedir}/"$(basename $src_clang) ]; then
+    wget $src_clang -O ${sourcedir}/$(basename $src_clang)
+fi
+if [ ! -f "${sourcedir}/"$(basename $src_rt) ]; then
+    wget $src_rt -O ${sourcedir}/$(basename $src_rt)
+fi
+tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+cd $pkgdir/$pkgname-$pkgver.src
+tar -xf ${sourcedir}/cfe-3.7.1.src.tar.xz -C tools &&
+tar -xf ${sourcedir}/compiler-rt-3.7.1.src.tar.xz -C projects &&
+
+mv tools/cfe-3.7.1.src tools/clang &&
+mv projects/compiler-rt-3.7.1.src projects/compiler-rt    
+}
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver.src
+sed -r "/ifeq.*CompilerTargetArch/s#i386#i686#g" \
+    -i projects/compiler-rt/make/platform/clang_linux.mk
+sed -e "s:/docs/llvm:/share/doc/llvm-3.7.1:" \
+    -i Makefile.config.in &&
+
+mkdir -v build &&
+cd       build 
+
+CC=gcc CXX=g++                          \
+../configure --prefix=/usr              \
+             --datarootdir=/usr/share   \
+             --sysconfdir=/etc          \
+             --enable-libffi            \
+             --enable-optimized         \
+             --enable-shared            \
+             --enable-targets=host,r600 \
+             --disable-assertions       \
+             --docdir=/usr/share/doc/llvm-3.7.1 &&
+make
+
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+for file in $installdir/usr/lib/lib{clang,LLVM,LTO}*.a
+do
+  test -f $file && chmod -v 644 $file
+done
+unset file
+
+install -v -dm755 $installdir/usr/lib/clang-analyzer &&
+
+for prog in scan-build scan-view
+do
+  cp -rfv ../tools/clang/tools/$prog $installdir/usr/lib/clang-analyzer/ &&
+  ln -sfv ../lib/clang-analyzer/$prog/$prog $installdir/usr/bin/
+done
+unset prog &&
+
+ln -sfv /usr/bin/clang \
+        $installdir/usr/lib/clang-analyzer/scan-build/ &&
+mkdir -vp $installdir/usr/share/man/man1
+mv -v   $installdir/usr/lib/clang-analyzer/scan-build/scan-build.1 \
+        $installdir/usr/share/man/man1/
+
+}
+
+function pkgafterinstall {
+cd $installdir
+}

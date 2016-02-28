@@ -1,0 +1,38 @@
+deps=(xorg-libraries)
+pkgname=dbus
+pkgver=1.10.6
+src="http://dbus.freedesktop.org/releases/dbus/dbus-1.10.6.tar.gz"
+website=
+diskusage="109 MB, with doxygen and xml documents (37 MB for the tests)"
+buildtime="0.4 SBU, with doxygen and xml documents (0.4 SBU for the tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr                  \
+            --sysconfdir=/etc              \
+            --localstatedir=/var           \
+            --disable-doxygen-docs         \
+            --disable-xml-docs             \
+            --disable-static               \
+            --disable-systemd              \
+            --without-systemdsystemunitdir \
+            --with-console-auth-dir=/run/console/ \
+            --docdir=/usr/share/doc/dbus-1.10.6   &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+chown -v root:messagebus $installdir/usr/libexec/dbus-daemon-launch-helper &&
+chmod -v      4750       $installdir/usr/libexec/dbus-daemon-launch-helper
+}
+
+function pkgafterinstall {
+cd $installdir
+}

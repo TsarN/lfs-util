@@ -1,0 +1,27 @@
+deps=(python)
+pkgname=libxml2
+pkgver=2.9.3
+src="http://xmlsoft.org/sources/libxml2-2.9.3.tar.gz"
+website=
+diskusage="95 MB (additional 20 MB for tests)"
+buildtime="0.5 SBU (additional 0.2 SBU for tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --with-history &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

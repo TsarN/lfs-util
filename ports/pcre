@@ -1,0 +1,37 @@
+deps=()
+pkgname=pcre
+pkgver=8.38
+src="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.bz2"
+website=
+diskusage="25 MB (with tests)"
+buildtime="0.3 SBU (with tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr                     \
+            --docdir=/usr/share/doc/pcre-8.38 \
+            --enable-unicode-properties       \
+            --enable-pcre16                   \
+            --enable-pcre32                   \
+            --enable-pcregrep-libz            \
+            --enable-pcretest-libreadline     \
+            --disable-static                 &&
+make
+}
+
+function pkginstall {
+mkdir -pv $installdir/lib &&
+make DESTDIR=$installdir install &&
+mv -v $installdir/usr/lib/libpcre.so.* $installdir/lib &&
+ln -sfv ../../lib/$(readlink $installdir/usr/lib/libpcre.so) $installdir/usr/lib/libpcre.so
+}
+
+function pkgafterinstall {
+cd $installdir
+}

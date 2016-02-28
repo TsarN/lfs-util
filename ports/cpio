@@ -1,0 +1,38 @@
+deps=()
+pkgname=cpio
+pkgver=2.12
+src="ftp://ftp.gnu.org/pub/gnu/cpio/cpio-2.12.tar.bz2"
+website=
+diskusage="18 MB (with tests and docs)"
+buildtime="0.3 SBU (with tests and docs)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+            --bindir=/bin \
+            --enable-mt   \
+            --with-rmt=/usr/libexec/rmt &&
+make &&
+makeinfo --html            -o doc/html      doc/cpio.texi &&
+makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi &&
+makeinfo --plaintext       -o doc/cpio.txt  doc/cpio.texi
+}
+
+function pkginstall {
+make DESTDIR=$installdir install &&
+install -v -m755 -d $installdir/usr/share/doc/cpio-2.12/html &&
+install -v -m644    doc/html/* \
+                    $installdir/usr/share/doc/cpio-2.12/html &&
+install -v -m644    doc/cpio.{html,txt} \
+                    $installdir/usr/share/doc/cpio-2.12
+}
+
+function pkgafterinstall {
+cd $installdir
+}

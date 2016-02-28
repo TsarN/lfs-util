@@ -7,6 +7,7 @@ set -e # Stop at first error
 . /etc/gross
 
 urls=false
+nomake=false
 noinstall=false
 noclean=false
 noconfirm=false
@@ -24,25 +25,39 @@ function installpkg {
         echo $src
         return
     fi
+    . "$filename"
     echo "${bold}Installing package from${normal} $filename"
     pkgdir="/var/tmp/gross/$pkgname-$pkgver"
     mkdir -p "$pkgdir"
     installdir="/var/tmp/gross/$pkgname-$pkgver-install"
+    mkdir -pv $installdir
     if ! $noconfirm; then
         read -p "Do you want to edit build script? [y/N] "
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             ${EDITOR:-vim} "$filename"
+            . "$filename"
         fi
     fi
-    . "$filename"
-    echo "${bold}Downloading package...${normal}"
-    pkgfetch
-    echo "${bold}Compiling package...${normal}"
-    pkgmake
+    if ! $nomake; then
+        echo "${bold}Downloading package...${normal}"
+        pkgfetch
+        echo "${bold}Compiling package...${normal}"
+        pkgmake
+    else
+        echo "${bold}Skipped compiling${normal}"
+	cd $pkgdir/$pkgname-$pkgver
+    fi
     if ! $noinstall; then
-        echo "${bold}Registering package...${normal}"
+        echo "${bold}Registering package...${normal} - $installdir"
         pkginstall 
-        cat $filename > "/var/lib/gross/$pkgname"
+        pkg=`echo "$i" | sed -e "s/\(.*\)_DEP/\1/g"` # Removing _DEP (for dependencies)
+        if ispkginstalled "/var/lib/gross/${pkg}"; then
+            forceunmerge=true
+            unmergepkg ${pkg}
+            forceunmerge=false
+        fi
+        filename=$1
+        cp -v "$filename" "/var/lib/gross/$pkgname"
         echo "files=(" >> "/var/lib/gross/$pkgname"
         cd "$installdir" && (for i in **; do # Whitespace-safe and recursive
             echo \"/$i\" >> "/var/lib/gross/$pkgname"
@@ -89,11 +104,6 @@ function mergepkg {
         asdep=1
         if [ $i != $pkg ]; then asdep=0; fi;
         echo "Installing $pkg, dep=$asdep"
-        if ispkginstalled "/var/lib/gross/${i}"; then
-            forceunmerge=true
-            unmergepkg ${i}
-            forceunmerge=false
-        fi
         installpkg "/var/lib/gross/db/${pkg}" $asdep
     done
 }
@@ -202,7 +212,7 @@ normal=$(tput sgr0)
 
 if [ $# -lt 1 ]; then
     echo "Usage: gross <operation>"
-    echo "Supported operations: clean, list, list-installed, list-outdated, merge, unmerge, upgrade, info, syncinfo"
+    echo "Supported operations: clean, list, list-installed, list-outdated, find-file, merge, unmerge, upgrade, info, syncinfo"
     exit
 fi
 pushd . > /dev/null
@@ -216,6 +226,8 @@ for arg in "${@:1}"; do
         usage=true
     elif [[ $arg = "--show-urls" ]]; then
         urls=true
+    elif [[ $arg = "--nomake" ]]; then
+        nomake=true
     elif [[ $arg = "--noinstall" ]]; then
         noinstall=true
     elif [[ $arg = "--noclean" ]]; then
@@ -263,16 +275,28 @@ if [ "$operation" = "info" ] || [ "$operation" = "syncinfo" ]; then
             if [ "$operation" = "info" ]; then
                 echo "List of installed files and directories: "
                 for file in ${files[@]}; do
-                    t=`grep -o "/" <<<"$file" | wc -l`
-                    for i in $(seq 1 $(($t - 1))); do
-                        printf "  "
-                    done
                     echo $file 
                 done
             fi
         else
             echo "$pkg: Package is not installed"
         fi
+    done
+fi
+
+if [ "$operation" = "find-file" ]; then
+    if $usage; then
+        echo "Usage: gross find-file <path>"
+        echo "Find packages that own specified file"
+        exit
+    fi
+    for pkg in `ls -p /var/lib/gross | grep -v /`; do
+        . /var/lib/gross/$pkg
+        for file in ${files[@]}; do
+            if [ "$file" = "${arguments[1]}" ]; then
+                echo $pkgname-$pkgver
+            fi
+        done
     done
 fi
 
@@ -318,6 +342,15 @@ if [ "$operation" = "merge" ]; then
     mergepkg "${arguments[@]:1}"
 fi
 
+if [ "$operation" = "install" ]; then
+    if $usage; then
+        echo "Usage: gross install <filename>"
+        echo "Install ONE package and DO NOT check it's dependencies"
+        exit
+    fi
+    installpkg "${arguments[1]}"
+fi
+
 if [ "$operation" = "list-outdated" ]; then
     if $usage; then
         echo "Usage: gross list-outdated"
@@ -358,6 +391,12 @@ if [ "$operation" = "upgrade" ]; then
         fi
     done
     mergepkg "${tomerge[@]}"
+fi
+
+if [ "$operation" = "new-package" ]; then
+    cp -v /var/lib/gross/db/dummy "/var/lib/gross/db/${arguments[1]}"
+    sed -i "s@^pkgname=@pkgname=${arguments[1]}@" "/var/lib/gross/db/${arguments[1]}"
+    vim "/var/lib/gross/db/${arguments[1]}"
 fi
 
 popd  > /dev/null
