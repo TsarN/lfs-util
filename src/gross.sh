@@ -4,13 +4,37 @@
 
 set -e # Stop at first error
 
-. /etc/gross
-
 urls=false
 nomake=false
 noinstall=false
 noclean=false
 noconfirm=false
+
+. /etc/gross
+
+if [[ $EUID -ne 0 ]]; then
+    sourcedir="$HOME/.local/src"
+fi
+
+mkdir -p $sourcedir
+mkdir -p $dbdir{,/db}
+
+vercomp () {
+    # 0 =
+    # 1 >
+    # 2 <
+    if [[ $1 = $2 ]]; then return 0; fi
+    for i in `printf "$1\n$2" | sort -V`; do
+        if [[ $i = $2 ]]; then return 1; else return 2; fi
+    done
+}
+
+function as_root() {
+    if   [ $EUID = 0 ]; then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $* 
+    else su -c \\"$*\\" 
+    fi 
+}
 
 function containsElement () {
     local e
@@ -51,23 +75,27 @@ function installpkg {
         echo "${bold}Registering package...${normal} - $installdir"
         pkginstall 
         pkg=`echo "$i" | sed -e "s/\(.*\)_DEP/\1/g"` # Removing _DEP (for dependencies)
-        if ispkginstalled "/var/lib/gross/${pkg}"; then
+        if ispkginstalled "${pkg}"; then
             forceunmerge=true
             unmergepkg ${pkg}
             forceunmerge=false
         fi
         filename=$1
-        cp -v "$filename" "/var/lib/gross/$pkgname"
-        echo "files=(" >> "/var/lib/gross/$pkgname"
-        cd "$installdir" && (for i in **; do # Whitespace-safe and recursive
-            echo \"/$i\" >> "/var/lib/gross/$pkgname"
+        cp "$filename" "/tmp/gross.tmp"
+        echo "files=(" >> "/tmp/gross.tmp"
+        cd "$installdir" && (for i in **; do 
+            echo \"/$i\" >> "/tmp/gross.tmp"
         done)
-        echo ")" >> "/var/lib/gross/$pkgname"
-        echo "asdep=$2" >> "/var/lib/gross/$pkgname"
+        echo ")" >> "/tmp/gross.tmp"
+        echo "asdep=$2" >> "/tmp/gross.tmp"
         echo "${bold}Installing package...${normal}"
-        (cd $installdir && tar -cf - *) | (cd /; tar -xvf -)
+        as_root cp -v "/tmp/gross.tmp" "${dbdir}/$pkgname"
+        rm /tmp/gross.tmp
+        echo "(cd $installdir && tar -cf - *) | (cd /; tar -xvf -)" > /tmp/gross.tmp
+        as_root bash /tmp/gross.tmp
+        rm /tmp/gross.tmp
         echo "${bold}Running after-install hook${normal}"
-        pkgafterinstall
+        as_root $0 trigger-post-install-hook $pkgname
     else
         echo "${bold}Skipped installation${normal}"
     fi
@@ -87,12 +115,38 @@ function mergepkg {
     if ! $urls; then
         echo "Building dependency tree..."
     fi
-    for i in "$@"; do
-        builddeptree "/var/lib/gross/db/${i}"
-        g_deptree+=($i)
+    for II in "$@"; do
+        builddeptree "${dbdir}/db/${II}"
+        g_deptree+=($II)
     done
     if ! $noconfirm; then
-        echo "About to merge these packages (_DEP for dependency): ${g_deptree[@]}"
+        echo "About to merge these packages:"
+        for i in ${g_deptree[@]}; do 
+            pkg=`echo "$i" | sed -e "s/\(.*\)_DEP/\1/g"`
+            getpkgversion "${dbdir}/db/${pkg}"
+            printf "${pkg}-${pkgver}"
+            if [[ -f "${dbdir}/${pkg}" ]]; then
+                version=$pkgver
+                sed -e '/^files=/q' -ne '$ !p' < "${dbdir}/${pkg}" > /tmp/gross.tmp
+                . /tmp/gross.tmp
+                rm /tmp/gross.tmp 
+                set +e
+                vercomp "$pkgver" "$version"
+                vcmp=$?
+                if [[ $vcmp -eq 2 ]]; then
+                    echo " -- upgrading"
+                fi
+                if [[ $vcmp -eq 1 ]]; then
+                    echo " -- downgrading"
+                fi
+                if [[ $vcmp -eq 0 ]]; then
+                    echo " -- reinstalling"
+                fi
+                set -e
+            else
+                echo ""
+            fi
+        done
         read -p "Are you sure? [y/N] "
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             echo "No packages to merge, exiting"
@@ -104,13 +158,13 @@ function mergepkg {
         asdep=1
         if [ $i != $pkg ]; then asdep=0; fi;
         echo "Installing $pkg, dep=$asdep"
-        installpkg "/var/lib/gross/db/${pkg}" $asdep
+        installpkg "${dbdir}/db/${pkg}" $asdep
     done
 }
 
 function ispkginstalled {
-    filename=$1
-    if [ -f "$filename" ]; then
+    pkg=$1
+    if [ -f "${dbdir}/$filename" ]; then
         return 0 # True
     else
         return 1 # False
@@ -120,8 +174,9 @@ function ispkginstalled {
 function getpkgversion {
     filename=$1
     if [ -f "$filename" ]; then
-        . "$filename"
-        eval "$2='$pkgver'"
+        grep "^pkgver" < "$filename" > /tmp/gross.tmp
+        . "/tmp/gross.tmp"
+        rm /tmp/gross.tmp
     fi
 }
 
@@ -133,24 +188,92 @@ function unmergepkg {
         exit
     fi
     if ! $forceunmerge; then
-        echo "About to unmerge these packages: $@"
-        read -p "Are you sure? [y/N] "
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "No packages to unmerge, exiting"
-            exit
+        if ! $noconfirm; then
+            echo "About to unmerge these packages: $@"
+            read -p "Are you sure? [y/N] "
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                echo "No packages to unmerge, exiting"
+                exit
+            fi
         fi
     fi
     for i in "$@"; do
         . "${dbdir}/${i}"
         for (( idx=${#files[@]}-1 ; idx>=0 ; idx-- )) ; do
             if [[ -d ${files[idx]} ]]; then
-                rmdir --ignore-fail-on-non-empty -- "${files[idx]}"
+                as_root rmdir --ignore-fail-on-non-empty -- "${files[idx]}"
             elif [[ -f ${files[idx]} ]]; then
-                rm -v -f -- "${files[idx]}"
+                as_root rm -v -f -- "${files[idx]}"
             fi
         done
-        rm -v -f -- "${dbdir}/${i}"
+        as_root rm -v -f -- "${dbdir}/${i}"
     done
+}
+
+sstatus=0
+
+function isdepsatisfiable {
+# Return values:
+# 0 - already satisfied
+# 1 - can't satisfy
+# 2 - requires installing from database
+
+    pkg=$1
+
+    if [ -f "${dbdir}/$pkg" ]; then
+        sstatus=0; return
+    fi
+
+    if [ -f "${dbdir}/db/$pkg" ]; then
+        sstatus=2; return
+    fi
+
+    # Here magic happens: we check versions
+    echo "$pkg" | sed 's/^\([a-zA-Z0-9-]\+\)\(>=\|<=\|=\|<\|>\)\(.*\)$/_pkgname="\1"\n_pkgif="\2"\n_pkgver="\3"/' > /tmp/gross.tmp
+    . /tmp/gross.tmp
+    rm /tmp/gross.tmp
+
+    _pkgifnot=""
+
+    if [ "${_pkgif}" = "<=" ]; then
+        _pkgifnot="! "
+        _pkgif=">"
+    fi
+
+    if [ "${_pkgif}" = ">=" ]; then
+        _pkgifnot="! "
+        _pkgif="<"
+    fi
+
+    if [[ $_pkgif = "<" ]]; then _pkgif=2; fi
+    if [[ $_pkgif = ">" ]]; then _pkgif=1; fi
+    if [[ $_pkgif = "=" ]]; then _pkgif=0; fi
+    
+    if [ -f "${dbdir}/${_pkgname}" ]; then
+        sed -e '/^files=/q' -ne '$ !p' < "${dbdir}/${_pkgname}" > /tmp/gross.tmp
+        . /tmp/gross.tmp
+        rm /tmp/gross.tmp 
+
+        set +e
+        vercomp "$pkgver" "$_pkgver"
+        if [ $_pkgifnot $? -eq $_pkgif ]; then
+            set -e
+            sstatus=0; return
+        fi
+        set -e
+    fi
+
+    if [ -f "${dbdir}/db/${_pkgname}" ]; then
+        . "${dbdir}/db/${_pkgname}"
+        set +e
+        vercomp "$pkgver" "$_pkgver"
+        if [ $_pkgifnot $? -eq $_pkgif ]; then
+            set -e
+            sstatus=2; return
+        fi
+        set -e
+    fi
+    sstatus=1; return
 }
 
 g_deptree=() # builddeptree return variable
@@ -164,8 +287,13 @@ function builddeptree {
             flag=false
             . "$filename"
             for dep in ${deps[@]}; do
-                path="/var/lib/gross/db/${dep}"
-                if [[ ! -f /var/lib/gross/${dep} ]]; then
+                path="${dbdir}/db/${dep}"
+                isdepsatisfiable "${dep}"
+                if [[ $sstatus -eq 1 ]]; then
+                    echo "Unable to satisfy dependency ${bold}${dep}${normal}"
+                    exit 1
+                fi
+                if [[ $sstatus -eq 2 ]]; then
                     if ! (containsElement ${dep} ${g_deptree[@]} || containsElement ${dep}_DEP ${g_deptree[@]}); then
                         builddeptree $path
                         g_deptree+=(${dep}_DEP)
@@ -187,7 +315,7 @@ function buildremtree {
         . "$filename"
         flag=0
         for rem in $deps; do
-            path="/var/lib/gross/db/${rem}"
+            path="${dbdir}/db/${rem}"
             if ! (containsElement ${rem} ${g_remtree}); then
                 if ! buildremtree $path; then
                     flag=1
@@ -260,9 +388,9 @@ if [ "$operation" = "info" ] || [ "$operation" = "syncinfo" ]; then
     fi
     for pkg in ${arguments[@]:1}; do
         if [ "$operation" = "info" ]; then
-            filename="/var/lib/gross/${pkg}"
+            filename="${dbdir}/${pkg}"
         else
-            filename="/var/lib/gross/db/${pkg}"
+            filename="${dbdir}/db/${pkg}"
         fi
         if [ -f "$filename" ]; then
             . "$filename"
@@ -290,8 +418,8 @@ if [ "$operation" = "find-file" ]; then
         echo "Find packages that own specified file"
         exit
     fi
-    for pkg in `ls -p /var/lib/gross | grep -v /`; do
-        . /var/lib/gross/$pkg
+    for pkg in `ls -p ${dbdir} | grep -v /`; do
+        . ${dbdir}/$pkg
         for file in ${files[@]}; do
             if [ "$file" = "${arguments[1]}" ]; then
                 echo $pkgname-$pkgver
@@ -306,8 +434,10 @@ if [ "$operation" = "list-installed" ]; then
         echo "Lists all packages currently installed"
         exit
     fi
-    for pkg in `ls -p /var/lib/gross | grep -v /`; do
-        . /var/lib/gross/$pkg
+    for pkg in `ls -p ${dbdir} | grep -v /`; do
+        sed -e '/^files=/q' -ne '$ !p' < "${dbdir}/$pkg" > /tmp/gross.tmp
+        . /tmp/gross.tmp
+        rm /tmp/gross.tmp 
         echo $pkgname-$pkgver
     done
 fi
@@ -318,8 +448,8 @@ if [ "$operation" = "list" ]; then
         echo "Lists all packages in repository"
         exit
     fi
-    for pkg in `ls -p /var/lib/gross/db | grep -v /`; do
-        . /var/lib/gross/db/$pkg
+    for pkg in `ls -p ${dbdir}/db | grep -v /`; do
+        . ${dbdir}/db/$pkg
         echo $pkgname-$pkgver
     done
 fi
@@ -357,17 +487,22 @@ if [ "$operation" = "list-outdated" ]; then
         echo "Lists all packages that can be updated"
         exit
     fi
-    for pkg in `ls -p /var/lib/gross | grep -v /`; do
-        . /var/lib/gross/$pkg
+    for pkg in `ls -p ${dbdir} | grep -v /`; do
+        sed -e '/^files=/q' -ne '$ !p' < "${dbdir}/$pkg" > /tmp/gross.tmp
+        . /tmp/gross.tmp
+        rm /tmp/gross.tmp 
         localver=$pkgver
-        if [ ! -f /var/lib/gross/db/$pkg ]; then
+        if [ ! -f ${dbdir}/db/$pkg ]; then
             continue
         fi
-        . /var/lib/gross/db/$pkg
+        . ${dbdir}/db/$pkg
         remotever=$pkgver
-        if [[ "$localver" < "$remotever" ]]; then
+        set +e
+        vercomp "$localver" "$remotever"
+        if [[ $? -eq 2 ]]; then
             echo "$pkg-$localver -> $pkg-$remotever"
         fi
+        set -e
     done
 fi
 
@@ -378,25 +513,35 @@ if [ "$operation" = "upgrade" ]; then
         exit
     fi
     tomerge=()
-    for pkg in `ls -p /var/lib/gross | grep -v /`; do
-        . /var/lib/gross/$pkg
+    for pkg in `ls -p ${dbdir} | grep -v /`; do
+        sed -e '/^files=/q' -ne '$ !p' < "${dbdir}/$pkg" > /tmp/gross.tmp
+        . /tmp/gross.tmp
+        rm /tmp/gross.tmp 
         localver=$pkgver
-        if [ ! -f /var/lib/gross/db/$pkg ]; then
+        if [ ! -f ${dbdir}/db/$pkg ]; then
             continue
         fi
-        . /var/lib/gross/db/$pkg
+        . ${dbdir}/db/$pkg
         remotever=$pkgver
-        if [[ "$localver" < "$remotever" ]]; then
+        set +e
+        vercomp "$localver" "$remotever"
+        if [[ $? -eq 2 ]]; then
             tomerge+=($pkg)
         fi
+        set -e
     done
     mergepkg "${tomerge[@]}"
 fi
 
 if [ "$operation" = "new-package" ]; then
-    cp -v /var/lib/gross/db/dummy "/var/lib/gross/db/${arguments[1]}"
-    sed -i "s@^pkgname=@pkgname=${arguments[1]}@" "/var/lib/gross/db/${arguments[1]}"
-    vim "/var/lib/gross/db/${arguments[1]}"
+    cp -v ${dbdir}/db/dummy "${dbdir}/db/${arguments[1]}"
+    sed -i "s@^pkgname=@pkgname=${arguments[1]}@" "${dbdir}/db/${arguments[1]}"
+    vim "${dbdir}/db/${arguments[1]}"
+fi
+
+if [ "$operation" = "trigger-post-install-hook" ]; then
+    . "${dbdir}/db/${arguments[1]}"
+    pkgafterinstall
 fi
 
 popd  > /dev/null
