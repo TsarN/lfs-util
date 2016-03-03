@@ -1,0 +1,24 @@
+deps=("glib>=2.0.0" "gtk3>=3.4.2" "vala>=0.16.0" "git")
+pkgname=gtk-theme-config-git
+pkgver="r107"
+src="https://github.com/satya164/gtk-theme-config"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    cd ${sourcedir} && git clone "$src"
+    cp -r ${sourcedir}/gtk-theme-config ${pkgdir}
+}
+
+function pkgmake {
+cd $pkgdir/gtk-theme-config
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,10 +1,10 @@
-deps=()
-pkgname=dhcpcd
-pkgver=6.10.1
-src="http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.1.tar.xz"
+deps=(xmlto)
+pkgname=pm-utils
+pkgver=1.4.1
+src="http://pm-utils.freedesktop.org/releases/pm-utils-1.4.1.tar.gz"
 website=
-diskusage="2.6 MB"
-buildtime="less than 0.1 SBU"
+diskusage="1.6 MB"
+buildtime="0.1 SBU"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
@@ -14,8 +14,9 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/lib/dhcpcd  &&
+./configure --prefix=/usr     \
+--sysconfdir=/etc \
+--docdir=/usr/share/doc/pm-utils-1.4.1
 make
 }
 

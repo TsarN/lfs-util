@@ -1,4 +1,4 @@
-deps=(python)
+deps=(python3)
 pkgname=xcb-proto
 pkgver=1.11
 src="http://xcb.freedesktop.org/dist/xcb-proto-1.11.tar.bz2"

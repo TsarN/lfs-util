@@ -1,0 +1,51 @@
+deps=(nspr sqlite)
+pkgname=nss
+pkgver=3.22.1
+src="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_22_1_RTM/src/nss-3.22.1.tar.gz"
+patchsrc="http://www.linuxfromscratch.org/patches/blfs/svn/nss-3.22.1-standalone-1.patch"
+website=
+diskusage="87 MB"
+buildtime="1.0 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+
+    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
+        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
+    fi
+    cp -rv ${sourcedir}/$(basename $patchsrc) $pkgdir/
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../nss-3.22.1-standalone-1.patch &&
+cd nss &&
+make -j1 BUILD_OPT=1                  \
+NSPR_INCLUDE_DIR=/usr/include/nspr  \
+USE_SYSTEM_ZLIB=1                   \
+ZLIB_LIBS=-lz                       \
+$([ $(uname -m) = x86_64 ] && echo USE_64=1) \
+$([ -f /usr/include/sqlite3.h ] && echo NSS_USE_SYSTEM_SQLITE=1)
+}
+
+function pkginstall {
+cd ../dist                                                          &&
+mkdir -vp $installdir/usr/{lib{,/pkgconfig},include/nss,bin}
+
+install -v  -m755 Linux*/lib/*.so              $installdir/usr/lib              &&
+install -v  -m644 Linux*/lib/{*.chk,libcrmf.a} $installdir/usr/lib              &&
+
+install -v -m755 -d                           $installdir/usr/include/nss      &&
+cp -v -RL {public,private}/nss/*              $installdir/usr/include/nss      &&
+chmod -v 644                                  $installdir/usr/include/nss/*    &&
+
+install -v -m755 Linux*/bin/{certutil,nss-config,pk12util} $installdir/usr/bin &&
+
+install -v -m644 Linux*/lib/pkgconfig/nss.pc  $installdir/usr/lib/pkgconfig
+}
+
+function pkgafterinstall {
+cd $installdir
+}

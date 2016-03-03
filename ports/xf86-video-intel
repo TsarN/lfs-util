@@ -1,6 +1,6 @@
 deps=(xcb-util xorg-server)
 pkgname=xf86-video-intel
-pkgver="dev.0340718"
+pkgver="0340718"
 src="http://anduin.linuxfromscratch.org/BLFS/xf86-video-intel/xf86-video-intel-0340718.tar.xz"
 website=
 diskusage="86 MB"

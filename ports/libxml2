@@ -1,4 +1,4 @@
-deps=(python)
+deps=(python3)
 pkgname=libxml2
 pkgver=2.9.3
 src="http://xmlsoft.org/sources/libxml2-2.9.3.tar.gz"

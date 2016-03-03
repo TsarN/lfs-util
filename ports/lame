@@ -1,10 +1,10 @@
 deps=()
-pkgname=dhcpcd
-pkgver=6.10.1
-src="http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.1.tar.xz"
+pkgname=lame
+pkgver=3.99.5
+src="http://downloads.sourceforge.net/lame/lame-3.99.5.tar.gz"
 website=
-diskusage="2.6 MB"
-buildtime="less than 0.1 SBU"
+diskusage="11 MB"
+buildtime="0.3 SBU"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
@@ -14,13 +14,15 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/lib/dhcpcd  &&
+case $(uname -m) in
+   i?86) sed -i -e '/xmmintrin\.h/d' configure ;;
+esac
+./configure --prefix=/usr --enable-mp3rtp --disable-static
 make
 }
 
 function pkginstall {
-make DESTDIR=$installdir install
+make DESTDIR=$installdir pkghtmldir=/usr/share/doc/lame-3.99.5 install
 }
 
 function pkgafterinstall {

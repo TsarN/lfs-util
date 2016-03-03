@@ -59,27 +59,49 @@ md5sum -c ../app-7.7.md5
 }
 
 function pkgmake {
-read -p "Do you want to untar? [Y/n] "
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    echo "Skipped untarring"
-else
-    for package in $(grep -v '^#' $sourcedir/$pkgname-$pkgver/app-7.7.md5 | awk '{print $2}')
-    do
-        tar -xf $sourcedir/$pkgname-$pkgver/app/$package -C "$pkgdir"
-        echo "Extracted ${package%.tar.bz2}"
-    done
-fi
+for package in $(grep -v '^#' $sourcedir/$pkgname-$pkgver/app-7.7.md5 | awk '{print $2}')
+do
+    tar -xf $sourcedir/$pkgname-$pkgver/app/$package -C "$pkgdir"
+    echo "Extracted ${package%.tar.bz2}"
+done
+pushd .
+echo "[xorg-applications-fixes] Patching luit-1.1.1"
+cd "$pkgdir/luit-1.1.1"
+cat > sys.c.patch << "EOF"
+*** sys.c   Mon Feb 29 20:52:39 2016
+--- sys.c.patched   Mon Feb 29 20:51:49 2016
+***************
+*** 335,345 ****
+  #if defined(HAVE_GRANTPT)
+      int rc;
+
+- #ifdef HAVE_POSIX_OPENPT
+-     pty = posix_openpt(O_RDWR);
+- #else
+      pty = open("/dev/ptmx", O_RDWR);
+- #endif
+      if (pty < 0)
+    goto bsd;
+
+--- 335,341 ----
+EOF
+patch < sys.c.patch > /dev/null
+
+echo "[xorg-applications-fixes] Patching sessreg-1.1.0"
+cd "$pkgdir/sessreg-1.1.0"
+cat > man/filenames.sed << "EOF"
+/__BEGIN_UTMP_ONLY__/,/__END_UTMP_ONLY__/ d
+s|__utmp_manpage__|utmpx|g
+s|__utmp_file__||
+s|__wtmp_manpage__|wtmpx|g
+s|__wtmp_file__||
+s|__ttys_file__|"/etc/ttys"|g
+s|__lastlog_file__||
+EOF
+popd
 for package in $(grep -v '^#' $sourcedir/$pkgname-$pkgver/app-7.7.md5 | awk '{print $2}')
 do
   packagedir="$pkgdir/${package%.tar.bz2}"
-  if [[ -f "$packagedir/.GROSS_BUILT" ]]; then
-    read -p "Do you want to rebuild ${package%.tar.bz2}? [y/N] "
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        printf ""
-    else
-        continue
-    fi
-  fi
   pushd $packagedir
   case $packagedir in
     luit-[0-9]* )
@@ -97,7 +119,6 @@ do
   esac
   ./configure $XORG_CONFIG
   make
-  touch .GROSS_BUILT
   popd
 done
 }

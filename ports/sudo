@@ -1,0 +1,28 @@
+deps=()
+pkgname=sudo
+pkgver=1.8.15
+src="http://www.sudo.ws/dist/sudo-1.8.15.tar.gz"
+website=
+diskusage="34 MB (with tests)"
+buildtime="0.4 SBU (with tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr  --libexecdir=/usr/lib  --with-secure-path  --with-all-insults  --with-env-editor  --docdir=/usr/share/doc/sudo-1.8.15  --with-passprompt="[sudo] password for %p" &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+ln -sfv libsudo_util.so.0.0.0 $installdir/usr/lib/sudo/libsudo_util.so.0
+}
+
+function pkgafterinstall {
+cd $installdir
+}

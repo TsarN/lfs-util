@@ -1,0 +1,36 @@
+deps=(fontconfig xorg-fonts)
+pkgname=ttf-dejavu
+pkgver=2.34
+src="http://downloads.sourceforge.net/project/dejavu/dejavu/2.34/dejavu-fonts-ttf-2.34.tar.bz2"
+website=
+diskusage=
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/dejavu-fonts-ttf-$pkgver
+install -v -dm755 "${installdir}"/etc/fonts/conf.avail
+install -v -dm755 "${installdir}"/usr/share/fonts/TTF
+install -v -m644 ttf/*.ttf "${installdir}"/usr/share/fonts/TTF/
+install -v -m644 fontconfig/*.conf "${installdir}"/etc/fonts/conf.avail/
+install -v -Dm644 LICENSE "${installdir}"/usr/share/licenses/${pkgname}/LICENSE
+}
+
+function pkginstall {
+cd $pkgdir/dejavu-fonts-ttf-$pkgver
+}
+
+function pkgafterinstall {
+pushd /etc/fonts/conf.d > /dev/null
+for config in "${configs[@]}"; do
+ln -sf ../conf.avail/${config} .
+done
+popd > /dev/null
+fc-cache -s
+mkfontdir /usr/share/fonts/TTF
+}

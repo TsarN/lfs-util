@@ -1,4 +1,4 @@
-deps=(python)
+deps=(python3)
 pkgname=libevdev
 pkgver=1.4.6
 src="http://www.freedesktop.org/software/libevdev/libevdev-1.4.6.tar.xz"

@@ -1,4 +1,4 @@
-deps=(python python2)
+deps=(python3 python2)
 pkgname=pyxdg
 pkgver=0.25
 src="http://people.freedesktop.org/~takluyver/pyxdg-0.25.tar.gz"

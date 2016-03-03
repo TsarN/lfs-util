@@ -1,6 +1,5 @@
 deps=()
 pkgname=xml-parser
-tarballname=XML-Parser
 pkgver=2.44
 src="http://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz"
 website="https://github.com/chorny/XML-Parser"
@@ -14,7 +13,7 @@ function pkgfetch {
     }
 
 function pkgmake {
-cd $pkgdir/$tarballname-$pkgver
+cd $pkgdir/XML-Parser-$pkgver
 perl Makefile.PL
 make
 }

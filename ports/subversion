@@ -1,0 +1,32 @@
+deps=(apr-util sqlite serf)
+pkgname=subversion
+pkgver=1.9.3
+src="http://www.apache.org/dist/subversion/subversion-1.9.3.tar.bz2"
+website=
+diskusage="429 MB (with all bindings and API documentation - additional 791 MB with tests)"
+buildtime="2.9 SBU (with all bindings and API documentation - additional 67 SBU for tests))"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr    \
+--disable-static \
+--with-apache-libexecdir
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+install -v -m755 -d $installdir/usr/share/doc/subversion-1.9.3 &&
+cp      -v -R       doc/* \
+                          $installdir/usr/share/doc/subversion-1.9.3
+}
+
+function pkgafterinstall {
+cd $installdir
+}

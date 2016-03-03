@@ -1,0 +1,42 @@
+deps=()
+pkgname=sgml-common
+pkgver=0.6.3
+src="ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/sgml-common-0.6.3.tgz"
+patchsrc="http://www.linuxfromscratch.org/patches/blfs/svn/sgml-common-0.6.3-manpage-1.patch"
+website=
+diskusage="1.5 MB"
+buildtime="less than 0.1 SBU"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+
+    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
+        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
+    fi
+    cp -v ${sourcedir}/$(basename $patchsrc) $pkgdir/
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../sgml-common-0.6.3-manpage-1.patch
+autoreconf -f -i
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir docdir=/usr/share/doc install &&
+make docdir=/usr/share/doc install
+
+install-catalog --add $installdir/etc/sgml/sgml-ent.cat \
+    $installdir/usr/share/sgml/sgml-iso-entities-8879.1986/catalog &&
+
+install-catalog --add $installdir/etc/sgml/sgml-docbook.cat \
+    $installdir/etc/sgml/sgml-ent.cat
+}
+
+function pkgafterinstall {
+cd $installdir
+}

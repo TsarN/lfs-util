@@ -1,0 +1,39 @@
+deps=(libffi)
+pkgname=python3
+pkgver=3.5.1
+src="https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tar.xz"
+website=
+diskusage="360 MB (with docs; additional 23 MB for the tests) "
+buildtime="1.1 SBU (additional 1.9 SBU for the tests) "
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/Python-$pkgver
+CXX="/usr/bin/g++"              \
+./configure --prefix=/usr       \
+            --enable-shared     \
+            --with-system-expat \
+            --with-system-ffi   \
+            --without-ensurepip &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install &&
+chmod -v 755 $installdir/usr/lib/libpython3.5m.so &&
+chmod -v 755 $installdir/usr/lib/libpython3.so
+mkdir -vp $installdir/usr/share/doc/python-3
+mkdir -vp $installdir/etc/profile.d
+ln -svfn python-3.5.1 $installdir/usr/share/doc/python-3
+echo 'export PYTHONDOCS=/usr/share/doc/python-3/html' > $installdir/etc/profile.d/pythondocs.sh
+chmod +x $installdir/etc/profile.d/pythondocs.sh
+}
+
+function pkgafterinstall {
+cd $installdir
+}

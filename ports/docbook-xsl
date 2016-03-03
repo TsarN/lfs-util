@@ -1,0 +1,38 @@
+deps=(libxml2)
+pkgname=docbook-xsl
+pkgver=1.79.1
+src="http://downloads.sourceforge.net/docbook/docbook-xsl-1.79.1.tar.bz2"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+}
+
+function pkginstall {
+install -v -m755 -d $installdir/usr/share/xml/docbook/xsl-stylesheets-1.79.1 &&
+
+cp -v -R VERSION assembly common eclipse epub epub3 extensions fo        \
+         highlighting html htmlhelp images javahelp lib manpages params  \
+         profiling roundtrip slides template tests tools webhelp website \
+         xhtml xhtml-1_1 xhtml5                                          \
+    $installdir/usr/share/xml/docbook/xsl-stylesheets-1.79.1 &&
+
+ln -s VERSION $installdir/usr/share/xml/docbook/xsl-stylesheets-1.79.1/VERSION.xsl &&
+
+install -v -m644 -D README \
+                    $installdir/usr/share/doc/docbook-xsl-1.79.1/README.txt &&
+install -v -m644    RELEASE-NOTES* NEWS* \
+                    $installdir/usr/share/doc/docbook-xsl-1.79.1
+}
+
+function pkgafterinstall {
+cd $installdir
+}

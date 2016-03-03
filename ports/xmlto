@@ -1,10 +1,10 @@
-deps=()
-pkgname=dhcpcd
-pkgver=6.10.1
-src="http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.1.tar.xz"
+deps=(docbook-xml docbook-xsl libxslt)
+pkgname=xmlto
+pkgver=0.0.28
+src="https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2"
 website=
-diskusage="2.6 MB"
-buildtime="less than 0.1 SBU"
+diskusage="1.5 MB (with tests)"
+buildtime="less than 0.1 SBU (with tests)"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
@@ -14,8 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/lib/dhcpcd  &&
+LINKS="/usr/bin/links" ./configure --prefix=/usr
 make
 }
 

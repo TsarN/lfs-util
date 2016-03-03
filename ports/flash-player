@@ -1,0 +1,32 @@
+deps=()
+pkgname=flash-player
+pkgver=11
+src="https://fpdownload.adobe.com/get/flashplayer/pdc/11.2.202.569/install_flash_player_11_linux.i386.tar.gz"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $installdir
+    }
+
+function pkgmake {
+cd $pkgdir
+}
+
+function pkginstall {
+cd $installdir
+rm -rf readme.txt LGPL
+mv -v libflashplayer.so $installdir/usr/lib/
+if [ -d "/usr/lib/mozilla/plugins" ]; then
+    echo "Installing a plugin for Firefox"
+    mkdir -p $installdir/usr/lib/mozilla/plugins
+    cp -v $installdir/usr/lib/libflashplayer.so $installdir/usr/lib/mozilla/plugins
+fi
+}
+
+function pkgafterinstall {
+cd $installdir
+}

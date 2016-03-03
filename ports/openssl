@@ -1,7 +1,7 @@
 deps=()
 pkgname=openssl
-pkgver=1.0.2f
-src="https://openssl.org/source/openssl-1.0.2f.tar.gz"
+pkgver=1.0.2g
+src="https://openssl.org/source/openssl-${pkgver}.tar.gz"
 website=""
 diskusage="49 MB"
 buildtime="1.0 SBU"
@@ -25,8 +25,8 @@ make
 function pkginstall {
 sed -i 's# libcrypto.a##;s# libssl.a##' Makefile
 make MANDIR=/usr/share/man MANSUFFIX=ssl DESTDIR=$installdir install &&
-install -dv -m755 $installdir/usr/share/doc/openssl-1.0.2f  &&
-cp -vfr doc/*     $installdir/usr/share/doc/openssl-1.0.2f
+install -dv -m755 $installdir/usr/share/doc/openssl-${pkgver}  &&
+cp -vfr doc/*     $installdir/usr/share/doc/openssl-${pkgver}
 }
 
 function pkgafterinstall {

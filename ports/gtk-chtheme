@@ -1,0 +1,28 @@
+deps=(gtk2)
+pkgname=gtk-chtheme
+pkgver=0.3.1
+src="http://plasmasturm.org/programs/$pkgname/$pkgname-$pkgver.tar.bz2"
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i 's|-DGTK.*||' Makefile
+sed -i 's|theme_list(g_.*|&\n\tread_theme_list(g_strconcat(g_get_user_data_dir(), "/themes", NULL));|' main.c
+make
+}
+
+function pkginstall {
+install -Dm755 $pkgname "$installdir"/usr/bin/$pkgname
+}
+
+function pkgafterinstall {
+cd $installdir
+}

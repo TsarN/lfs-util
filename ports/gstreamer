@@ -1,0 +1,29 @@
+deps=(glib gobject-introspection)
+pkgname=gstreamer
+pkgver=1.6.3
+src="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.6.3.tar.xz"
+website=
+diskusage="136 MB (with tests)"
+buildtime="1.5 SBU (with tests)"
+function pkgfetch {
+    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
+        wget $src -O ${sourcedir}/$(basename $src)
+    fi
+    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
+    }
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+            --with-package-name="GStreamer 1.6.3 BLFS" \
+            --with-package-origin="http://www.linuxfromscratch.org/blfs/view/svn/"
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,41 @@
+deps=(fontconfig xorg-fonts libarchive cabextract)
+pkgname=ttf-ms-fonts
+pkgver=2.34
+src="http://downloads.sourceforge.net/corefonts"
+# Please, remove Comic Sans :)
+_fonts=("andale" "arial" "arialb" "comic" "courie" "georgi" "impact" "times" "trebuc" "verdan" "webdin")
+website=
+diskusage=
+buildtime=
+function pkgfetch {
+mkdir -p "${sourcedir}/${pkgname}"
+cd "${sourcedir}/${pkgname}"
+for font in ${_fonts[@]}; do
+    fontsrc="${src}/${font}32.exe"
+    if [ ! -f "$(basename $fontsrc)" ]; then
+        wget "$fontsrc" -O "${sourcedir}/${pkgname}/$(basename $fontsrc)"
+    fi
+done
+}
+
+function pkgmake {
+cd $pkgdir
+mkdir -p $pkgdir/$pkgname-$pkgver
+cabextract "${sourcedir}/${pkgname}"/*.exe
+}
+
+function pkginstall {
+cd $pkgdir
+install -dm755 "$installdir/usr/share/fonts/TTF"
+for font in *.{ttf,TTF}; do
+    install -m644 $font "$installdir/usr/share/fonts/TTF/$(echo $font|tr A-Z a-z)"
+done
+install -Dm644 Licen.TXT "$installdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+function pkgafterinstall {
+echo -n "Updating font cache..."
+fc-cache -f > /dev/null
+mkfontscale /usr/share/fonts/TTF
+mkfontdir /usr/share/fonts/TTF
+}

@@ -1,9 +1,9 @@
 deps=()
-pkgname=dhcpcd
-pkgver=6.10.1
-src="http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.1.tar.xz"
-website=
-diskusage="2.6 MB"
+pkgname=cabextract
+pkgver=1.6
+src="http://www.cabextract.org.uk/cabextract-1.6.tar.gz"
+website="http://www.cabextract.org.uk"
+diskusage="1.7 MB"
 buildtime="less than 0.1 SBU"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
@@ -14,8 +14,7 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/lib/dhcpcd  &&
+./configure --prefix=/usr
 make
 }
 

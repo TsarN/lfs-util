@@ -1,10 +1,10 @@
 deps=()
-pkgname=dhcpcd
-pkgver=6.10.1
-src="http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.1.tar.xz"
+pkgname=opus
+pkgver=1.1.2
+src="http://downloads.xiph.org/releases/opus/opus-1.1.2.tar.gz"
 website=
-diskusage="2.6 MB"
-buildtime="less than 0.1 SBU"
+diskusage="21 MB (with tests)"
+buildtime="0.6 SBU (with tests)"
 function pkgfetch {
     if [ ! -f "${sourcedir}/"$(basename $src) ]; then
         wget $src -O ${sourcedir}/$(basename $src)
@@ -14,8 +14,9 @@ function pkgfetch {
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/lib/dhcpcd  &&
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/opus-1.1.2
 make
 }
 
