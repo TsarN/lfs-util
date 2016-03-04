@@ -8,6 +8,26 @@ This package contains some useful tools for Linux From Scratch.
 In Chapter 6, just before chrooting, run
 
     # ./install.sh $LFS
+    
+## Dependencies
+
+### Required
+`bash`, `coreutils`, `grep`, `sed`, `tar`, `gzip`, `bzip2`, `xz` - all provided by LFS
+
+### Recommended
+`wget` - for downloading packages
+
+`sudo` - for building packages as not priviligied user
+
+`vim` - for editing packages
+
+### Optional
+`subversion` - for downloading packages from SVN
+
+`git` - for downloading packages from Git
+
+`unzip`, `unrar`, `cabextract` - for unpacking packages
+
 
 ## Files
 - /usr/bin/gross - Gross
