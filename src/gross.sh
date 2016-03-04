@@ -1,7 +1,4 @@
 #!/bin/bash
-# Gross, LFS package manager
-# Written by Tsarev Nikita, 2016
-
 set -e # Stop at first error
 
 urls=false
