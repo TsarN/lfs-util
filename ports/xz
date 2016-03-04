@@ -1,16 +1,10 @@
 deps=()
 pkgname=xz
 pkgver=5.2.2
-src="http://tukaani.org/xz/xz-5.2.2.tar.xz"
+src=("http://tukaani.org/xz/xz-5.2.2.tar.xz")
 website="http://tukaani.org/xz"
 diskusage="15.1 MB"
 buildtime="0.3 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

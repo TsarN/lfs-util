@@ -1,16 +1,10 @@
 deps=()
 pkgname=libtiff
 pkgver=4.0.6
-src="http://download.osgeo.org/libtiff/tiff-4.0.6.tar.gz"
+src=("http://download.osgeo.org/libtiff/tiff-4.0.6.tar.gz")
 website=
 diskusage="25 MB"
 buildtime="0.4 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/tiff-$pkgver

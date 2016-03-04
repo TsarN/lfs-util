@@ -1,17 +1,10 @@
 deps=(libxml2 sgml-common unzip)
 pkgname=docbook-xml
 pkgver=4.5
-src="http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip"
+src=("http://www.docbook.org/xml/4.5/docbook-xml-4.5.zip")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    cd $pkgdir
-    unzip ${sourcedir}/$(basename $src)
-    }
 
 function pkgmake {
 cd $pkgdir

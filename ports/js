@@ -1,16 +1,10 @@
 deps=(libffi nspr python2 zip)
 pkgname=js
 pkgver=17.0.0
-src="http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.tar.gz"
+src=("http://ftp.mozilla.org/pub/mozilla.org/js/mozjs17.0.0.tar.gz")
 website=
 diskusage="1.2 GB"
 buildtime="2.0 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/mozjs${pkgver}

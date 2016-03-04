@@ -1,16 +1,10 @@
 deps=(glib gobject-introspection)
 pkgname=gstreamer
 pkgver=1.6.3
-src="http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.6.3.tar.xz"
+src=("http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.6.3.tar.xz")
 website=
 diskusage="136 MB (with tests)"
 buildtime="1.5 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,16 +1,10 @@
 deps=(gtk2 menu-cache libexif vala lxmenu-data)
 pkgname=libfm
 pkgver=1.2.4
-src="http://downloads.sourceforge.net/pcmanfm/libfm-1.2.4.tar.xz"
+src=("http://downloads.sourceforge.net/pcmanfm/libfm-1.2.4.tar.xz")
 website=
 diskusage="35 MB"
 buildtime="0.3 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

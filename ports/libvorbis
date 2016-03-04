@@ -1,16 +1,10 @@
 deps=(libogg)
 pkgname=libvorbis
 pkgver=1.3.5
-src="http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz"
+src=("http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz")
 website=
 diskusage="15 MB"
 buildtime="0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

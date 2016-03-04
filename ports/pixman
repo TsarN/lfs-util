@@ -1,16 +1,10 @@
 deps=()
 pkgname=pixman
 pkgver=0.34.0
-src="http://cairographics.org/releases/pixman-0.34.0.tar.gz"
+src=("http://cairographics.org/releases/pixman-0.34.0.tar.gz")
 website=
 diskusage="47 MB (with tests)"
 buildtime="0.8 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

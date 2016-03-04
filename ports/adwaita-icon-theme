@@ -1,16 +1,10 @@
 deps=(gtk2)
 pkgname=adwaita-icon-theme
 pkgver=3.18.0
-src="http://ftp.gnome.org/pub/gnome/sources/adwaita-icon-theme/3.18/adwaita-icon-theme-3.18.0.tar.xz"
+src=("http://ftp.gnome.org/pub/gnome/sources/adwaita-icon-theme/3.18/adwaita-icon-theme-3.18.0.tar.xz")
 website=
 diskusage="130 MB"
 buildtime="1.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

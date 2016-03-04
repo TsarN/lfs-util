@@ -1,16 +1,10 @@
 deps=(openbox)
 pkgname=obconf
 pkgver=2.0.4
-src="http://openbox.org/dist/obconf/obconf-2.0.4.tar.gz"
+src=("http://openbox.org/dist/obconf/obconf-2.0.4.tar.gz")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

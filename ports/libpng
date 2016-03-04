@@ -1,22 +1,10 @@
 deps=()
 pkgname=libpng
 pkgver=1.6.21
-src="http://downloads.sourceforge.net/libpng/libpng-1.6.21.tar.xz"
-patchsrc="http://downloads.sourceforge.net/project/apng/libpng/libpng16/libpng-1.6.21-apng.patch.gz"
+src=("http://downloads.sourceforge.net/libpng/libpng-1.6.21.tar.xz" "http://downloads.sourceforge.net/project/apng/libpng/libpng16/libpng-1.6.21-apng.patch.gz")
 website=
 diskusage="16 MB (with tests)"
 buildtime="0.6 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-
-    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
-        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
-    fi
-    cp -rv ${sourcedir}/$(basename $patchsrc) $pkgdir/
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

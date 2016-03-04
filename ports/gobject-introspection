@@ -1,16 +1,10 @@
 deps=(glib python2)
 pkgname=gobject-introspection
 pkgver=1.46.0
-src="http://ftp.gnome.org/pub/gnome/sources/gobject-introspection/1.46/gobject-introspection-1.46.0.tar.xz"
+src=("http://ftp.gnome.org/pub/gnome/sources/gobject-introspection/1.46/gobject-introspection-1.46.0.tar.xz")
 website=
 diskusage="52 MB (with documentation, add 6 MB for tests)"
 buildtime="0.2 SBU (additional 0.5 SBU for documentation and 0.4 SBU for the tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

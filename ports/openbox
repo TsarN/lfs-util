@@ -1,16 +1,10 @@
 deps=(pango pyxdg)
 pkgname=openbox
 pkgver=3.6.1
-src="http://openbox.org/dist/openbox/openbox-3.6.1.tar.gz"
+src=("http://openbox.org/dist/openbox/openbox-3.6.1.tar.gz")
 website=
 diskusage="21 MB"
 buildtime="0.3 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

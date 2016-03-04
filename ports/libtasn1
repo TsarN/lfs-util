@@ -1,16 +1,10 @@
 deps=()
 pkgname=libtasn1
 pkgver=4.7
-src="http://ftp.gnu.org/gnu/libtasn1/libtasn1-4.7.tar.gz"
+src=("http://ftp.gnu.org/gnu/libtasn1/libtasn1-4.7.tar.gz")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

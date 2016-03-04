@@ -1,16 +1,10 @@
 deps=()
 pkgname=apr
 pkgver=1.5.2
-src="http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2"
+src=("http://archive.apache.org/dist/apr/apr-1.5.2.tar.bz2")
 website=
 diskusage="13 MB (additional 3 MB for the tests)"
 buildtime="0.2 SBU (1.1 with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

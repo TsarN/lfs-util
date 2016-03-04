@@ -1,33 +1,15 @@
-deps=(libffi python2)
+deps=(libffi python2 "gcc>4.9.1") # There's a bug with gcc<=4.9.1
 pkgname=llvm
 pkgver=3.7.1
-src="http://llvm.org/releases/3.7.1/llvm-3.7.1.src.tar.xz"
-src_clang="http://llvm.org/releases/3.7.1/cfe-3.7.1.src.tar.xz"
-src_rt="http://llvm.org/releases/3.7.1/compiler-rt-3.7.1.src.tar.xz"
+src=("http://llvm.org/releases/3.7.1/llvm-3.7.1.src.tar.xz" "http://llvm.org/releases/3.7.1/cfe-3.7.1.src.tar.xz" "http://llvm.org/releases/3.7.1/compiler-rt-3.7.1.src.tar.xz")
 website=
-diskusage=
-buildtime=
-function pkgfetch {
-if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-    wget $src -O ${sourcedir}/$(basename $src)
-fi
-if [ ! -f "${sourcedir}/"$(basename $src_clang) ]; then
-    wget $src_clang -O ${sourcedir}/$(basename $src_clang)
-fi
-if [ ! -f "${sourcedir}/"$(basename $src_rt) ]; then
-    wget $src_rt -O ${sourcedir}/$(basename $src_rt)
-fi
-tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-cd $pkgdir/$pkgname-$pkgver.src
-tar -xf ${sourcedir}/cfe-3.7.1.src.tar.xz -C tools &&
-tar -xf ${sourcedir}/compiler-rt-3.7.1.src.tar.xz -C projects &&
-
-mv tools/cfe-3.7.1.src tools/clang &&
-mv projects/compiler-rt-3.7.1.src projects/compiler-rt    
-}
+diskusage="1.6 GB (with Clang and tests)"
+buildtime="13 SBU (with Clang, tests and parallelism = 4)"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver.src
+mv $pkgdir/cfe-${pkgver}.src tools/clang
+mv $pkgdir/compiler-rt-${pkgver}.src projects/compiler-rt
 sed -r "/ifeq.*CompilerTargetArch/s#i386#i686#g" \
     -i projects/compiler-rt/make/platform/clang_linux.mk
 sed -e "s:/docs/llvm:/share/doc/llvm-3.7.1:" \

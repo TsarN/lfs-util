@@ -1,16 +1,10 @@
 deps=()
 pkgname=findutils
 pkgver=4.6.0
-src="http://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz"
+src=("http://ftp.gnu.org/gnu/findutils/findutils-4.6.0.tar.gz")
 website="http://www.gnu.org/software/findutils/"
 diskusage="28 MB"
 buildtime="0.4 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,16 +1,10 @@
 deps=(gst-plugins-base cairo flac gdk-pixbuf libjpeg-turbo libpng libsoup libvpx xorg-libraries)
 pkgname=gst-plugins-good
 pkgver=1.6.3
-src="http://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.6.3.tar.xz"
+src=("http://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.6.3.tar.xz")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

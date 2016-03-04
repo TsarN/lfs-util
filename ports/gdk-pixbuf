@@ -1,16 +1,10 @@
 deps=(glib libjpeg-turbo libpng libtiff xorg-libraries)
 pkgname=gdk-pixbuf
 pkgver=2.32.3
-src="http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/2.32/gdk-pixbuf-2.32.3.tar.xz"
+src=("http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/2.32/gdk-pixbuf-2.32.3.tar.xz")
 website=
 diskusage="40 MB (additional 2 MB for the tests)"
 buildtime="0.3 SBU (additional 7.7 SBU for the tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

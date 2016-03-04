@@ -1,16 +1,10 @@
 deps=()
 pkgname=man-pages
 pkgver=4.04
-src="https://www.kernel.org/pub/linux/docs/man-pages/man-pages-4.04.tar.xz"
+src=("https://www.kernel.org/pub/linux/docs/man-pages/man-pages-4.04.tar.xz")
 website="http://www.kernel.org/doc/man-pages/"
 diskusage="26 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,21 +1,10 @@
 deps=(yasm gtk2 libvdpau desktop-file-utils)
 pkgname=mplayer
 pkgver=SVN-r37794
-src="http://anduin.linuxfromscratch.org/BLFS/other/mplayer-SVN-r37794.tar.xz"
-skinsrc="https://www.mplayerhq.hu/MPlayer/skins/Clearlooks-1.7.tar.bz2"
+src=("http://anduin.linuxfromscratch.org/BLFS/other/mplayer-SVN-r37794.tar.xz" "https://www.mplayerhq.hu/MPlayer/skins/Clearlooks-1.7.tar.bz2")
 website=
 diskusage="264 MB"
 buildtime="3.7 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-
-    if [ ! -f "${sourcedir}/"$(basename $skinsrc) ]; then
-        wget $skinsrc -O ${sourcedir}/$(basename $skinsrc)
-    fi
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
@@ -37,7 +26,7 @@ mkdir -vp $installdir/usr/share/mplayer/skins
 ln -svf ../icons/hicolor/48x48/apps/mplayer.png \
         $installdir/usr/share/pixmaps/mplayer.png
 install -v -m644 etc/*.conf $installdir/etc/mplayer
-tar -xvf ${sourcedir}/$(basename $skinsrc) -C $installdir/usr/share/mplayer/skins
+cp -rv $pkgdir/$(basename ${src[1]}) $installdir/usr/share/mplayer/skins
 ln -svfn Clearlooks $installdir/usr/share/mplayer/skins/default
 }
 

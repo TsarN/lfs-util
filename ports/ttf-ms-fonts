@@ -1,27 +1,13 @@
 deps=(fontconfig xorg-fonts libarchive cabextract)
 pkgname=ttf-ms-fonts
 pkgver=2.34
-src="http://downloads.sourceforge.net/corefonts"
-# Please, remove Comic Sans :)
-_fonts=("andale" "arial" "arialb" "comic" "courie" "georgi" "impact" "times" "trebuc" "verdan" "webdin")
+src=(http://downloads.sourceforge.net/corefonts/{andale,arial,arialb,comic,courie,georgi,impact,times,trebuc,verdan,webdin}32.exe)
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-mkdir -p "${sourcedir}/${pkgname}"
-cd "${sourcedir}/${pkgname}"
-for font in ${_fonts[@]}; do
-    fontsrc="${src}/${font}32.exe"
-    if [ ! -f "$(basename $fontsrc)" ]; then
-        wget "$fontsrc" -O "${sourcedir}/${pkgname}/$(basename $fontsrc)"
-    fi
-done
-}
 
 function pkgmake {
 cd $pkgdir
-mkdir -p $pkgdir/$pkgname-$pkgver
-cabextract "${sourcedir}/${pkgname}"/*.exe
 }
 
 function pkginstall {

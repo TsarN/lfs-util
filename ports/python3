@@ -1,16 +1,10 @@
 deps=(libffi)
 pkgname=python3
 pkgver=3.5.1
-src="https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tar.xz"
+src=("https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tar.xz")
 website=
 diskusage="360 MB (with docs; additional 23 MB for the tests) "
 buildtime="1.1 SBU (additional 1.9 SBU for the tests) "
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/Python-$pkgver

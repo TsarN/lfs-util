@@ -1,16 +1,10 @@
 deps=()
 pkgname=which
 pkgver=2.21
-src="http://ftp.gnu.org/gnu/which/which-2.21.tar.gz"
+src=("http://ftp.gnu.org/gnu/which/which-2.21.tar.gz")
 website=
 diskusage="1 MB"
 buildtime="0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

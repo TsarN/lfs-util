@@ -1,16 +1,10 @@
 deps=(gtk2 libwnck libxklavier)
 pkgname=gxkb
 pkgver=0.7.6
-src="http://freefr.dl.sourceforge.net/project/gxkb/gxkb-0.7.6.tar.gz"
+src=("http://freefr.dl.sourceforge.net/project/gxkb/gxkb-0.7.6.tar.gz")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

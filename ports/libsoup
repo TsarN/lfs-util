@@ -1,16 +1,10 @@
 deps=(glib-networking libxml2 sqlite gobject-introspection vala)
 pkgname=libsoup
 pkgver=2.52.2
-src="http://ftp.gnome.org/pub/gnome/sources/libsoup/2.52/libsoup-2.52.2.tar.xz"
+src=("http://ftp.gnome.org/pub/gnome/sources/libsoup/2.52/libsoup-2.52.2.tar.xz")
 website=
 diskusage="45 MB (with tests)"
 buildtime="0.5 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

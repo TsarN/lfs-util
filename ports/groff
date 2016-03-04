@@ -1,16 +1,10 @@
 deps=()
 pkgname=groff
 pkgver=1.22.3
-src="http://ftp.gnu.org/gnu/groff/groff-1.22.3.tar.gz"
+src=("http://ftp.gnu.org/gnu/groff/groff-1.22.3.tar.gz")
 website="http://www.gnu.org/software/groff/"
 diskusage="84 MB"
 buildtime="0.5 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

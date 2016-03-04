@@ -1,16 +1,10 @@
 deps=(gst-plugins-base yasm)
 pkgname=gst-libav
 pkgver=1.6.3
-src="http://gstreamer.freedesktop.org/src/gst-libav/gst-libav-1.6.3.tar.xz"
+src=("http://gstreamer.freedesktop.org/src/gst-libav/gst-libav-1.6.3.tar.xz")
 website=
 diskusage="599 MB (with tests)"
 buildtime="3.6 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

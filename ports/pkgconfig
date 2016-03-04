@@ -1,16 +1,10 @@
 deps=()
 pkgname=pkgconfig
 pkgver=0.29
-src="http://pkgconfig.freedesktop.org/releases/pkg-config-0.29.tar.gz"
+src=("http://pkgconfig.freedesktop.org/releases/pkg-config-0.29.tar.gz")
 website="http://www.freedesktop.org/wiki/Software/pkg-config"
 diskusage="29 MB"
 buildtime="0.3 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

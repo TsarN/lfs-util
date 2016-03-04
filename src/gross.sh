@@ -36,6 +36,19 @@ function as_root() {
     fi 
 }
 
+function pullfromsvn() {
+    cd /tmp 
+    for name in {LFS,BLFS}; do 
+        wget "http://svn.linuxfromscratch.org/$name/trunk/BOOK/packages.ent" >/dev/null 2>&1
+cat packages.ent | grep '^<!ENTITY' |  sed -e 's/<!--.*-->//' -e 's/^<!ENTITY \(.*\) \+"\(.*\)">/\1 \2/' | grep -v "^%" | sed "/-->/d" | sed 's/<!--.*$//g' > pkglist 
+grep -ho --color=none "&[a-zA-Z0-9-]\+;" pkglist | sort | uniq | sed 's/^&\(.*\);$/\1/' > pkgent 
+for i in `cat pkgent`; do grep "^$i" pkglist --color=none | sed 's|\([a-zA-Z0-9-]\+\) \+\([^ ]\+\)|s@\\\&\1;@\2@g|'; done > pkgsed 
+sed -f pkgsed pkglist | grep 'version ' | sed 's/-version//g' | sed 's/ \+/ /g' | sed 's/^ \+//g' | sed 's/ \+$//g' | sed 's/ /=/' > pkgres 
+for ii in `cat pkgres`; do pkg=`echo "$ii" | grep -o --color=none '^[^=]\+'`; if [[ -f "/var/lib/gross/db/$pkg" ]]; then . "/var/lib/gross/db/$pkg"; printf "pkgv=" > /tmp/gross.tmp; echo "$ii" | sed 's@^[^=]\+=\(.*\)$@\1@' >> /tmp/gross.tmp; . /tmp/gross.tmp; rm /tmp/gross.tmp; if [[ "$pkgver" != "$pkgv" ]]; then echo "$pkg: $pkgver -> $pkgv"; fi; fi; done 
+        rm packages.ent pkglist pkgent pkgsed pkgres
+    done
+}
+
 function containsElement () {
     local e
     for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
@@ -49,6 +62,7 @@ function installpkg {
         echo $src
         return
     fi
+    unset -f pkgfetch
     . "$filename"
     echo "${bold}Installing package from${normal} $filename"
     pkgdir="/var/tmp/gross/$pkgname-$pkgver"
@@ -63,8 +77,31 @@ function installpkg {
         fi
     fi
     if ! $nomake; then
-        echo "${bold}Downloading package...${normal}"
-        pkgfetch
+        if [[ `type -t pkgfetch` = "function" ]]; then
+            echo "${bold}Downloading and unpacking package...${normal}"
+            pkgfetch
+        else
+            progress=0
+            for file in ${src[@]}; do
+                progress=$((progress + 1))
+                echo "${bold}Downloading ${normal}${file} ${bold}($progress/${#src[@]})${normal}"
+                if [[ "$file" == http* ]]; then
+                    if [[ ! -f ${sourcedir}/$(basename $file) ]]; then
+                        wget "$file" -O "${sourcedir}/$(basename $file)"
+                    fi
+                fi
+                if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file"; fi
+                if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file"; fi
+                echo "${bold}Extracting ${normal}$(basename $file)"
+                if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
+                if [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
+                if [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
+                if [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
+                if [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; fi
+                if [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; fi
+                if [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; fi
+            done
+        fi
         echo "${bold}Compiling package...${normal}"
         pkgmake
     else
@@ -340,7 +377,7 @@ normal=$(tput sgr0)
 
 if [ $# -lt 1 ]; then
     echo "Usage: gross <operation>"
-    echo "Supported operations: clean, list, list-installed, list-outdated, find-file, merge, unmerge, upgrade, info, syncinfo"
+    echo "Supported operations: clean, list, list-installed, list-outdated, find-file, merge, unmerge, upgrade, info, syncinfo, check-updates"
     exit
 fi
 pushd . > /dev/null
@@ -542,6 +579,10 @@ fi
 if [ "$operation" = "trigger-post-install-hook" ]; then
     . "${dbdir}/db/${arguments[1]}"
     pkgafterinstall
+fi
+
+if [ "$operation" = "check-updates" ]; then
+    pullfromsvn
 fi
 
 popd  > /dev/null

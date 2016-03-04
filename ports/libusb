@@ -1,15 +1,15 @@
-deps=(freetype fribidi fontconfig)
-pkgname=libass
-pkgver=0.13.1
-src=("https://github.com/libass/libass/releases/download/0.13.1/libass-0.13.1.tar.xz")
+deps=()
+pkgname=libusb
+pkgver=1.0.20
+src=("http://downloads.sourceforge.net/libusb/libusb-1.0.20.tar.bz2")
 website=
-diskusage="6.2 MB"
+diskusage="7.6 MB (additional 2.8 MB for API documentation)"
 buildtime="0.1 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
 ./configure --prefix=/usr --disable-static
-make
+make -j1 
 }
 
 function pkginstall {

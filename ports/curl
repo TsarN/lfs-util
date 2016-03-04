@@ -1,16 +1,10 @@
 deps=()
 pkgname=curl
 pkgver=7.47.1
-src="https://curl.haxx.se/download/curl-7.47.1.tar.lzma"
+src=("https://curl.haxx.se/download/curl-7.47.1.tar.lzma")
 website=
 diskusage="56 MB (with tests)"
 buildtime="0.4 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

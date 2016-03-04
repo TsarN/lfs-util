@@ -1,16 +1,10 @@
 deps=()
 pkgname=texinfo
 pkgver=6.1
-src="http://ftp.gnu.org/gnu/texinfo/texinfo-6.1.tar.xz"
+src=("http://ftp.gnu.org/gnu/texinfo/texinfo-6.1.tar.xz")
 website="http://www.gnu.org/software/texinfo/"
 diskusage="105 MB"
 buildtime="0.6 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

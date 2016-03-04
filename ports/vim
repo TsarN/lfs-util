@@ -1,16 +1,10 @@
 deps=()
 pkgname=vim
 pkgver=7.4
-src="ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2"
+src=("ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2")
 website="http://www.vim.org"
 diskusage="111 MB"
 buildtime="1.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/vim74

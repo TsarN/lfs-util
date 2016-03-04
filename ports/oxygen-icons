@@ -1,16 +1,10 @@
 deps=(cmake)
 pkgname=oxygen-icons
 pkgver=15.04.3
-src="http://download.kde.org/stable/applications/15.04.3/src/oxygen-icons-15.04.3.tar.xz"
+src=("http://download.kde.org/stable/applications/15.04.3/src/oxygen-icons-15.04.3.tar.xz")
 website=
 diskusage="474 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

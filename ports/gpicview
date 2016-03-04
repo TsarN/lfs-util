@@ -1,16 +1,10 @@
 deps=(gtk2)
 pkgname=gpicview
 pkgver=0.2.5
-src="http://downloads.sourceforge.net/lxde/gpicview-0.2.5.tar.xz"
+src=("http://downloads.sourceforge.net/lxde/gpicview-0.2.5.tar.xz")
 website=
 diskusage="6.5 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,16 +1,10 @@
 deps=()
 pkgname=alsa-lib
 pkgver=1.1.0
-src="ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.1.0.tar.bz2"
+src=("ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.1.0.tar.bz2")
 website=
 diskusage="32 MB (additional 36 MB for tests)"
 buildtime="0.3 SBU (less than 0.1 SBU for tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

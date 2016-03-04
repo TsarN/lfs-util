@@ -1,16 +1,10 @@
 deps=()
 pkgname=sqlite
 pkgver=3.11.0
-src="http://sqlite.org/2016/sqlite-autoconf-3110000.tar.gz"
+src=("http://sqlite.org/2016/sqlite-autoconf-3110000.tar.gz")
 website=
 diskusage="83 MB (with Optional Documentation)"
 buildtime="0.6 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-autoconf-3110000

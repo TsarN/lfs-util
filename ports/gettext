@@ -1,16 +1,10 @@
 deps=()
 pkgname=gettext
 pkgver=0.19.7
-src="http://ftp.gnu.org/gnu/gettext/gettext-0.19.7.tar.xz"
+src=("http://ftp.gnu.org/gnu/gettext/gettext-0.19.7.tar.xz")
 website="http://www.gnu.org/software/gettext/"
 diskusage="190 MB"
 buildtime="7.8 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

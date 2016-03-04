@@ -1,16 +1,10 @@
 deps=()
 pkgname=cpio
 pkgver=2.12
-src="ftp://ftp.gnu.org/pub/gnu/cpio/cpio-2.12.tar.bz2"
+src=("ftp://ftp.gnu.org/pub/gnu/cpio/cpio-2.12.tar.bz2")
 website=
 diskusage="18 MB (with tests and docs)"
 buildtime="0.3 SBU (with tests and docs)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

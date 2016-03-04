@@ -1,16 +1,10 @@
 deps=()
 pkgname=grub
 pkgver=2.02~beta2
-src="http://alpha.gnu.org/gnu/grub/grub-2.02~beta2.tar.xz"
+src=("http://alpha.gnu.org/gnu/grub/grub-2.02~beta2.tar.xz")
 website="http://www.gnu.org/software/grub/"
 diskusage="140 MB"
 buildtime="0.9 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

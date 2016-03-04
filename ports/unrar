@@ -1,16 +1,10 @@
 deps=()
 pkgname=unrar
 pkgver=5.3.11
-src="http://www.rarlab.com/rar/unrarsrc-5.3.11.tar.gz"
+src=("http://www.rarlab.com/rar/unrarsrc-5.3.11.tar.gz")
 website=
 diskusage="2.4 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname

@@ -1,16 +1,10 @@
 deps=()
 pkgname=gzip
 pkgver=1.6
-src="http://ftp.gnu.org/gnu/gzip/gzip-1.6.tar.xz"
+src=("http://ftp.gnu.org/gnu/gzip/gzip-1.6.tar.xz")
 website="http://www.gnu.org/software/gzip/"
 diskusage="19.6 MB"
 buildtime="0.2 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

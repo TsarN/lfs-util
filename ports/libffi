@@ -1,16 +1,10 @@
 deps=()
 pkgname=libffi
 pkgver=3.2.1
-src="ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz"
+src=("ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz")
 website=
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

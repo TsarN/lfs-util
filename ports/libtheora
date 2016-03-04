@@ -1,16 +1,10 @@
 deps=(libogg libvorbis)
 pkgname=libtheora
 pkgver=1.1.1
-src="http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.xz"
+src=("http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.xz")
 website=
 diskusage="13.4 MB (without static libs or API docs and without installing the examples)"
 buildtime="0.2 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,21 +1,10 @@
 deps=()
 pkgname=readline
 pkgver=6.3
-src="http://ftp.gnu.org/gnu/readline/readline-6.3.tar.gz"
-patchsrc="http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/readline-6.3-upstream_fixes-3.patch"
+src=("http://ftp.gnu.org/gnu/readline/readline-6.3.tar.gz" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc1/readline-6.3-upstream_fixes-3.patch")
 website="http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html"
 diskusage="13.5 MB"
 buildtime="0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
-        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
-    fi
-    cp ${sourcedir}/$(basename $patchsrc) $pkgdir
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

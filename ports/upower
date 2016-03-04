@@ -1,18 +1,18 @@
-deps=(freetype)
-pkgname=fontconfig
-pkgver=2.11.1
-src=("http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.11.1.tar.bz2")
+deps=(dbus-glib libgudev libusb polkit pm-utils gobject-introspection)
+pkgname=upower
+pkgver=0.9.23
+src=("http://upower.freedesktop.org/releases/upower-0.9.23.tar.xz")
 website=
-diskusage=
-buildtime=
+diskusage="10 MB"
+buildtime="0.2 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
 ./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --localstatedir=/var \
-            --disable-docs       \
-            --docdir=/usr/share/doc/fontconfig-2.11.1 &&
+            --enable-deprecated  \
+            --disable-static
 make
 }
 

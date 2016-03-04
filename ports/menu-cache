@@ -1,16 +1,10 @@
 deps=(libfm-extra)
 pkgname=menu-cache
 pkgver=1.0.1
-src="http://downloads.sourceforge.net/lxde/menu-cache-1.0.1.tar.xz"
+src=("http://downloads.sourceforge.net/lxde/menu-cache-1.0.1.tar.xz")
 website=
 diskusage="3.8 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

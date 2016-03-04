@@ -1,21 +1,12 @@
 deps=()
 pkgname=linux-headers
 pkgver=4.4.2
-src="https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.2.tar.xz"
+src=("https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.2.tar.xz")
 website="https://kernel.org"
 diskusage="704 MB"
 buildtime="less than 0.1 SBU"
-function pkgfetch {
-    echo "hey bastards"
-    echo "${sourcedir}/$(basename $src)"
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xvf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
-cd $pkgdir
 cd $pkgdir/linux-$pkgver
 make mrproper
 make INSTALL_HDR_PATH=dest headers_install

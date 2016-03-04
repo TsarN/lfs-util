@@ -1,16 +1,10 @@
 deps=(libxau xcb-proto libxdmcp)
 pkgname=libxcb
 pkgver=1.11.1
-src="http://xcb.freedesktop.org/dist/libxcb-1.11.1.tar.bz2"
+src=("http://xcb.freedesktop.org/dist/libxcb-1.11.1.tar.bz2")
 website=
 diskusage="42 MB, with tests (124 MB with doxygen generated documentation) "
 buildtime="0.2 SBU, with tests (0.3 SBU with doxygen generated documentation) "
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

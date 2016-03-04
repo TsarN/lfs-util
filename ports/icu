@@ -1,16 +1,10 @@
 deps=()
 pkgname=icu
 pkgver=56.1
-src="http://download.icu-project.org/files/icu4c/56.1/icu4c-56_1-src.tgz"
+src=("http://download.icu-project.org/files/icu4c/56.1/icu4c-56_1-src.tgz")
 website=
 diskusage="302 MB (additional 67 MB for the tests)"
 buildtime="1.5 SBU (additional 1.9 SBU for the tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname/source

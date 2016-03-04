@@ -1,22 +1,10 @@
 deps=(xorg-libraries libdrm elfutils libvdpau llvm)
 pkgname=mesa
 pkgver=11.1.2
-src="ftp://ftp.freedesktop.org/pub/mesa/11.1.2/mesa-11.1.2.tar.xz"
-patchsrc="http://www.linuxfromscratch.org/patches/blfs/svn/mesa-11.1.2-add_xdemos-1.patch"
+src=("ftp://ftp.freedesktop.org/pub/mesa/11.1.2/mesa-11.1.2.tar.xz" "http://www.linuxfromscratch.org/patches/blfs/svn/mesa-11.1.2-add_xdemos-1.patch")
 website=
 diskusage="317 MB (with tests and docs)"
 buildtime="2.9 SBU (with tests and docs - all with parallelism = 4)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-
-    if [ ! -f "${sourcedir}/"$(basename $patchsrc) ]; then
-        wget $patchsrc -O ${sourcedir}/$(basename $patchsrc)
-    fi
-    cp -rv ${sourcedir}/$(basename $patchsrc) $pkgdir/
-}
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

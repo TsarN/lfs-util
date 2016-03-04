@@ -1,16 +1,10 @@
 deps=(openssl)
 pkgname=links
 pkgver=2.12
-src="http://links.twibright.com/download/links-2.12.tar.bz2"
+src=("http://links.twibright.com/download/links-2.12.tar.bz2")
 website=
 diskusage="54 MB (with graphics)"
 buildtime="0.3 SBU (with graphics)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

@@ -1,16 +1,10 @@
 deps=(gtk3 "libnotify>=0.5")
 pkgname=volumeicon
 pkgver=0.5.1
-src="http://softwarebakery.com/maato/files/volumeicon/volumeicon-0.5.1.tar.gz"
+src=("http://softwarebakery.com/maato/files/volumeicon/volumeicon-0.5.1.tar.gz")
 website="http://softwarebakery.com/maato/volumeicon.html"
 diskusage=
 buildtime=
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

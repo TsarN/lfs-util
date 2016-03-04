@@ -1,16 +1,10 @@
 deps=()
 pkgname=tar
 pkgver=1.28
-src="http://ftp.gnu.org/gnu/tar/tar-1.28.tar.xz"
+src=("http://ftp.gnu.org/gnu/tar/tar-1.28.tar.xz")
 website="http://www.gnu.org/software/tar/"
 diskusage="39 MB"
 buildtime="2.5 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

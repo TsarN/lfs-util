@@ -1,16 +1,10 @@
 deps=(docbook-xml docbook-xsl libxslt)
 pkgname=xmlto
 pkgver=0.0.28
-src="https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2"
+src=("https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2")
 website=
 diskusage="1.5 MB (with tests)"
 buildtime="less than 0.1 SBU (with tests)"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

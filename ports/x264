@@ -1,16 +1,10 @@
 deps=(yasm)
 pkgname=x264
 pkgver=20160220-2245
-src="http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20160220-2245-stable.tar.bz2"
+src=("http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20160220-2245-stable.tar.bz2")
 website=
 diskusage="9.8 MB"
 buildtime="0.2 SBU"
-function pkgfetch {
-    if [ ! -f "${sourcedir}/"$(basename $src) ]; then
-        wget $src -O ${sourcedir}/$(basename $src)
-    fi
-    tar -xf ${sourcedir}/$(basename $src) -C $pkgdir
-    }
 
 function pkgmake {
 cd $pkgdir/$pkgname-snapshot-$pkgver-stable
