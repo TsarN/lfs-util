@@ -1,0 +1,23 @@
+deps=(git wget sudo)
+pkgname=gross
+pkgver=0.1
+src=("git://github.com/TsarN/lfs-util")
+website="https://github.com/TsarN/lfs-util"
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/lfs-util
+}
+
+function pkginstall {
+cd $pkgdir/lfs-util
+mkdir -p $installdir/usr/bin
+mkdir -p $installdir/etc
+cp src/gross.sh $installdir/usr/bin/gross
+cp config/gross.sh $installdir/etc/gross
+}
+
+function pkgafterinstall {
+cd $installdir
+}
