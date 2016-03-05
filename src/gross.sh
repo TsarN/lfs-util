@@ -1,4 +1,7 @@
 #!/bin/bash
+# Gross, LFS package manager
+# Written by Tsarev Nikita, 2016
+
 set -e # Stop at first error
 
 urls=false
@@ -82,7 +85,7 @@ function installpkg {
             for file in ${src[@]}; do
                 progress=$((progress + 1))
                 echo "${bold}Downloading ${normal}${file} ${bold}($progress/${#src[@]})${normal}"
-                if [[ "$file" == http* ]]; then
+                if [[ "$file" == http* ]] || [[ "$file" == ftp* ]]; then
                     if [[ ! -f ${sourcedir}/$(basename $file) ]]; then
                         wget "$file" -O "${sourcedir}/$(basename $file)"
                     fi
@@ -90,13 +93,14 @@ function installpkg {
                 if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file"; fi
                 if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file"; fi
                 echo "${bold}Extracting ${normal}$(basename $file)"
-                if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
-                if [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
-                if [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
-                if [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; fi
-                if [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; fi
-                if [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; fi
-                if [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; fi
+                if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                elif [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                elif [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                elif [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                elif [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; 
+                elif [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; 
+                elif [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; 
+                else cp "${sourcedir}/$(basename $file)" "${pkgdir}"; fi
             done
         fi
         echo "${bold}Compiling package...${normal}"
@@ -197,8 +201,7 @@ function mergepkg {
 }
 
 function ispkginstalled {
-    pkg=$1
-    if [ -f "${dbdir}/$filename" ]; then
+    if [ -f "${dbdir}/$1" ]; then
         return 0 # True
     else
         return 1 # False
@@ -232,6 +235,7 @@ function unmergepkg {
         fi
     fi
     for i in "$@"; do
+        echo "${bold}Uninstalling${normal} $i"
         . "${dbdir}/${i}"
         for (( idx=${#files[@]}-1 ; idx>=0 ; idx-- )) ; do
             if [[ -d ${files[idx]} ]]; then
