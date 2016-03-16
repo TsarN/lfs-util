@@ -1,0 +1,51 @@
+deps=(fontconfig libxml2 xorg-libraries freetype gettext desktop-file-utils)
+pkgname=wine
+pkgver=1.9.5
+src=("http://dl.winehq.org/wine/source/1.9/wine-1.9.5.tar.bz2" "http://source.winehq.org/git/wine.git/patch/c6d6dcee47eb97fd75e389434d4136de2f31414c")
+website="http://winehq.org"
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -p1 -i ../c6d6dcee47eb97fd75e389434d4136de2f31414c
+rm -rf build
+mkdir build
+cd build
+../configure --prefix=/usr --with-x --with-gstreamer
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver/build
+make prefix=$installdir/usr install
+install -d "$installdir"/etc/fonts/conf.{avail,d}
+cat > $installdir/etc/fonts/conf.avail/30-win32-aliases.conf << "EOF"
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <alias binding="same">
+    <family>MS Shell Dlg</family>
+    <accept><family>Microsoft Sans Serif</family></accept>
+    <default><family>sans-serif</family></default>
+  </alias>
+  <alias binding="same">
+    <family>MS Shell Dlg 2</family>
+    <accept><family>Tahoma</family></accept>
+    <default><family>sans-serif</family></default>
+  </alias>
+
+  <alias binding="same">
+    <family>MS Sans Serif</family>
+    <prefer><family>Microsoft Sans Serif</family></prefer>
+    <default><family>sans-serif</family></default>
+  </alias>
+</fontconfig>
+EOF
+
+ln -s ../conf.avail/30-win32-aliases.conf "$installdir/etc/fonts/conf.d/30-win32-aliases.conf"
+}
+
+function pkgafterinstall {
+update-desktop-database -q
+}

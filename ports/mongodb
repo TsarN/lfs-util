@@ -1,0 +1,23 @@
+deps=("gcc>=4.8.2" "python2>=2.7" "scons>=2.3" "openssl")
+pkgname=mongodb
+pkgver="r33144"
+src=("git://github.com/mongodb/mongo.git")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/mongo
+# Edit following line to compile other programs
+scons mongod mongo --ssl --disable-warnings-as-errors $MAKEFLAGS $([[ `uname -m` = i?86 ]] && printf -- "--wiredtiger=off")
+}
+
+function pkginstall {
+cd $pkgdir/mongo
+mkdir -p $installdir/usr/bin
+cp -v mongo* $installdir/usr/bin
+}
+
+function pkgafterinstall {
+cd $installdir
+}

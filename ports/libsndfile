@@ -1,0 +1,21 @@
+deps=()
+pkgname=libsndfile
+pkgver=1.0.26
+src=("http://www.mega-nerd.com/libsndfile/files/libsndfile-1.0.26.tar.gz")
+website=
+diskusage="36 MB (with tests)"
+buildtime="0.7 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/$pkgname-$pkgver
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

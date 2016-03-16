@@ -1,0 +1,32 @@
+deps=(python2 dbus-python wireless-tools net-tools pygtk wpa_supplicant dhcpcd)
+pkgname=wicd
+pkgver=1.7.4
+src=("https://launchpad.net/wicd/1.7/1.7.4/+download/wicd-1.7.4.tar.gz")
+website=
+diskusage="4.2 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+    sed -e "/wpath.logrotate\|wpath.systemd/d" \
+    -e "/detection failed/ a\                self.init=\'init\/default\/wicd\'" \
+    -i.orig setup.py &&
+
+rm po/*.po           &&
+
+   python setup.py configure --no-install-kde     \
+   --no-install-init    \
+   --no-install-gnome-shell-extensions \
+   --docdir=/usr/share/doc/wicd-1.7.4
+   # EDIT FOLLOWING LINES TO FIT YOUR SITUATION
+   #   --no-install-acpi    \
+   #   --no-install-pmutils \
+}
+
+function pkginstall {
+python setup.py install --root=$installdir
+}
+
+function pkgafterinstall {
+cd $installdir
+}

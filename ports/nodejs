@@ -1,0 +1,23 @@
+deps=("gcc>=4.8" "python2>=2.6" "make>=3.81")
+pkgname=nodejs
+pkgver=6.0.0-nightly2016030417924703d6
+src=(https://nodejs.org/download/nightly/v${pkgver}/node-v${pkgver}.tar.xz)
+website="https://nodejs.org/en/"
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/node-v$pkgver
+./configure --prefix=/usr
+make
+make doc
+}
+
+function pkginstall {
+cd $pkgdir/node-v$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

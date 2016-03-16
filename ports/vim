@@ -9,7 +9,7 @@ buildtime="1.1 SBU"
 function pkgmake {
 cd $pkgdir/vim74
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
-./configure --prefix=/usr
+./configure --prefix=/usr 
 make
 }
 

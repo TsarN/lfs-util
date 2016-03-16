@@ -1,0 +1,23 @@
+deps=(json-c libsndfile alsa-lib dbus glib openssl speex xorg-libraries)
+pkgname=pulseaudio
+pkgver=8.0
+src=("http://freedesktop.org/software/pulseaudio/releases/pulseaudio-8.0.tar.xz")
+website=
+diskusage="110 MB (with tests)"
+buildtime="2.2 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i "/seems to be moved/s/^/#/" build-aux/ltmain.sh
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-bluez4 --disable-rpath
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+rm -f $installdir/etc/dbus-1/system.d/pulseaudio-system.conf
+}
+
+function pkgafterinstall {
+cd $installdir
+}

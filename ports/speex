@@ -1,0 +1,27 @@
+deps=(libogg)
+pkgname=speex
+pkgver=1.2rc2
+src=("http://downloads.us.xiph.org/releases/speex/speex-1.2rc2.tar.gz" "http://downloads.us.xiph.org/releases/speex/speexdsp-1.2rc3.tar.gz")
+website=
+diskusage="13.8 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/$pkgname-$pkgver
+make
+cd $pkgdir/speexdsp-1.2rc3
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/speexdsp-1.2rc3
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+cd $pkgdir/speexdsp-1.2rc3
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

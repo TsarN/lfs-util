@@ -1,0 +1,22 @@
+deps=(desktop-file-utils hicolor-icon-theme curl dbus "freetype>=2" "gdk-pixbuf>=2")
+pkgname=steam
+pkgver=1.0.0.51
+src=("http://repo.steampowered.com/$pkgname/pool/$pkgname/s/$pkgname/${pkgname}_$pkgver.tar.gz")
+website="http://steampowered.com"
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname
+}
+
+function pkginstall {
+make DESTDIR="$installdir" install
+install -Dm644 "$installdir/usr/share/doc/steam/steam_install_agreement.txt" "$installdir/usr/share/licenses/steam/LICENSE"
+ln -sf /bin/true "$installdir/usr/bin/steamdeps"
+}
+
+function pkgafterinstall {
+update-desktop-database -q
+gtk-update-icon-cache -q -t -f usr/share/icons/hicolor
+}

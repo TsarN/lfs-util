@@ -1,0 +1,29 @@
+deps=(gtk2 poppler desktop-file-utils hicolor-icon-theme)
+pkgname=epdfview
+pkgver=0.1.8
+src=("http://anduin.linuxfromscratch.org/BLFS/epdfview/epdfview-0.1.8.tar.bz2" "http://www.linuxfromscratch.org/patches/blfs/svn/epdfview-0.1.8-fixes-2.patch")
+website=
+diskusage="6 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../epdfview-0.1.8-fixes-2.patch
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+for size in 24 32 48; do
+    mkdir -p $installdir/usr/share/icons/hicolor/${size}x${size}
+    ln -svf ../../../../epdfview/pixmaps/icon_epdfview-$size.png \
+    $installdir/usr/share/icons/hicolor/${size}x${size}/apps
+done 
+unset size 
+}
+
+function pkgafterinstall {
+update-desktop-database 
+gtk-update-icon-cache -t -f --include-image-data /usr/share/icons/hicolor
+}

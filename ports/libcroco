@@ -1,10 +1,10 @@
-deps=(freetype fribidi fontconfig)
-pkgname=libass
-pkgver=0.13.2
-src=("https://github.com/libass/libass/releases/download/0.13.2/libass-0.13.2.tar.xz")
+deps=(glib libxml2)
+pkgname=libcroco
+pkgver=0.6.11
+src=("http://ftp.gnome.org/pub/gnome/sources/libcroco/0.6/libcroco-0.6.11.tar.xz")
 website=
-diskusage="6.2 MB"
-buildtime="0.1 SBU"
+diskusage="13 MB (with tests)"
+buildtime="0.1 SBU (with tests)"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver

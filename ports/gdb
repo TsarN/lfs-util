@@ -1,0 +1,21 @@
+deps=()
+pkgname=gdb
+pkgver=7.11
+src=(https://ftp.gnu.org/gnu/gdb/gdb-7.11.tar.xz)
+website=
+diskusage="419 MB"
+buildtime="2.4 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --with-system-readline
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir -C gdb install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

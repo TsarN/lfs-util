@@ -1,15 +1,16 @@
-deps=(freetype fribidi fontconfig)
-pkgname=libass
-pkgver=0.13.2
-src=("https://github.com/libass/libass/releases/download/0.13.2/libass-0.13.2.tar.xz")
+deps=()
+pkgname=json-c
+pkgver=0.12
+src=("https://s3.amazonaws.com/json-c_releases/releases/json-c-0.12.tar.gz")
 website=
-diskusage="6.2 MB"
-buildtime="0.1 SBU"
+diskusage="6.7 MB"
+buildtime="less than 0.1 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
+sed -i s/-Werror// Makefile.in
 ./configure --prefix=/usr --disable-static
-make
+make -j1
 }
 
 function pkginstall {

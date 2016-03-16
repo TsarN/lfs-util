@@ -1,0 +1,29 @@
+_python_targets=(python2 python3) # At least one required
+deps=(dbus-glib ${_python_targets[@]})
+pkgname=dbus-python
+pkgver=1.2.4
+src=("http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.4.tar.gz")
+website=
+diskusage="11 MB"
+buildtime="0.3 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+for py in ${_python_targets[@]}; do
+    mkdir $py
+    pushd $py
+    PYTHON=/usr/bin/$py ../configure --prefix=/usr --docdir=/usr/share/doc/$pkgname-$pkgver
+    make
+    popd
+done
+}
+
+function pkginstall {
+for py in ${_python_targets[@]}; do
+    make -C $py DESTDIR=$installdir install
+done
+}
+
+function pkgafterinstall {
+cd $installdir
+}

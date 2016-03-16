@@ -1,0 +1,21 @@
+deps=(gdk-pixbuf libcroco pango gobject-introspection gtk3 vala)
+pkgname=librsvg
+pkgver=2.40.13
+src=("http://ftp.gnome.org/pub/gnome/sources/librsvg/2.40/librsvg-2.40.13.tar.xz")
+website=
+diskusage="14 MB (with tests)"
+buildtime="0.2 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --enable-vala --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,33 @@
+deps=(fontconfig cairo libjpeg-turbo libpng openjpeg)
+pkgname=poppler
+pkgver=0.41.0
+src=("http://poppler.freedesktop.org/poppler-0.41.0.tar.xz" "http://poppler.freedesktop.org/poppler-data-0.4.7.tar.gz")
+website=
+diskusage="66 MB (with Qt4 and Qt5 libraries)"
+buildtime="0.7 SBU (with Qt4 and Qt5 libraries)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr               \
+--sysconfdir=/etc           \
+--disable-static            \
+--enable-build-type=release \
+--enable-cmyk               \
+--enable-xpdf-headers       \
+--with-testdatadir=$PWD/testfiles
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mkdir -p $installdir/usr/share/doc
+install -v -m755 -d        $installdir/usr/share/doc/poppler-0.41.0 &&
+install -v -m644 README*   $installdir/usr/share/doc/poppler-0.41.0 &&
+cp -vr glib/reference/html $installdir/usr/share/doc/poppler-0.41.0
+cd $pkgdir/$pkgname-data-0.4.7
+make prefix=$installdir/usr install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,13 +1,14 @@
-deps=(freetype fribidi fontconfig)
-pkgname=libass
-pkgver=0.13.2
-src=("https://github.com/libass/libass/releases/download/0.13.2/libass-0.13.2.tar.xz")
+deps=()
+pkgname=openjpeg
+pkgver=1.5.2
+src=("http://downloads.sourceforge.net/openjpeg.mirror/openjpeg-1.5.2.tar.gz")
 website=
-diskusage="6.2 MB"
-buildtime="0.1 SBU"
+diskusage="16 MB"
+buildtime="0.2 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
+autoreconf -f -i
 ./configure --prefix=/usr --disable-static
 make
 }

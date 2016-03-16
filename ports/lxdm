@@ -1,0 +1,30 @@
+deps=(gtk2 iso-codes librsvg consolekit2)
+pkgname=lxdm
+pkgver=0.5.3
+src=("http://downloads.sourceforge.net/lxdm/lxdm-0.5.3.tar.xz")
+website=
+diskusage="5.6 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+
+sed -i 's:sysconfig/i18n:profile.d/i18n.sh:g' data/lxdm.in &&
+sed -i 's:/etc/xprofile:/etc/profile:g' data/Xsession &&
+sed -e 's/^bg/#&/'        \
+-e '/reset=1/ s/# //' \
+-e 's/logou$/logout/' \
+-e "/arg=/a arg=$XORG_PREFIX/bin/X" \
+-i data/lxdm.conf.in
+
+./configure --prefix=/usr --sysconfdir=/etc --with-systemdsystemunitdir=no --without-pam
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

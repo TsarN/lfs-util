@@ -1,0 +1,21 @@
+deps=()
+pkgname=xorriso
+pkgver=1.4.2
+src=("https://www.gnu.org/software/xorriso/xorriso-1.4.2.tar.gz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

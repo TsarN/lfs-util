@@ -1,19 +1,19 @@
 deps=()
 pkgname=nasm
-pkgver=2.11.08
-src=("http://www.nasm.us/pub/nasm/releasebuilds/2.11.08/nasm-2.11.08.tar.xz")
+pkgver=2.12
+src=("http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.xz")
 website=
 diskusage="22 MB"
 buildtime="0.1 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr
+./configure --prefix=$installdir/usr
 make
 }
 
 function pkginstall {
-make DESTDIR=$installdir install
+make install
 }
 
 function pkgafterinstall {

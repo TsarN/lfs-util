@@ -1,0 +1,39 @@
+deps=(glib python2 xorg-server sdl)
+pkgname=qemu
+pkgver=2.5.0
+src=("http://wiki.qemu.org/download/qemu-2.5.0.tar.bz2")
+website=
+diskusage="419 MB (with tests)"
+buildtime="2.4 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+if [ $(uname -m) = i686 ]; then
+   QEMU_ARCH=i386-softmmu
+else
+   QEMU_ARCH=x86_64-softmmu
+fi
+
+mkdir -vp build &&
+cd        build &&
+
+../configure --prefix=/usr               \
+             --sysconfdir=/etc           \
+             --target-list=$QEMU_ARCH    \
+             --audio-drv-list=alsa       \
+             --docdir=/usr/share/doc/qemu-2.5.0 &&
+
+unset QEMU_ARCH &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mkdir -p $installdir/usr/bin
+ln -sv qemu-system-`uname -m` $installdir/usr/bin/qemu
+}
+
+function pkgafterinstall {
+[ -e  /usr/lib/libcacard.so ] &&
+chmod -v 755 /usr/lib/libcacard.so
+}

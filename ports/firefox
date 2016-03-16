@@ -1,13 +1,18 @@
 deps=(alsa-lib gtk2 nss unzip yasm zip icu libevent libvpx sqlite)
 pkgname=firefox
-pkgver=44.0.2
-src=("https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/44.0.2/source/firefox-44.0.2.source.tar.xz")
+pkgver=45.0
+src=("https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/45.0/source/firefox-45.0.source.tar.xz")
 website=
 diskusage="4.4 GB (80 MB installed)"
 buildtime="10 SBU (with parallelism=4)"
 
 function pkgmake {
-cat > mozconfig << "EOF"
+cd $pkgdir/$pkgname-$pkgver
+if [[ -f ${dbdir}/conf/mozconfig ]]; then
+    cp ${dbdir}/conf/mozconfig .
+    echo "${bold}Using old Firefox configuration${normal}"
+else
+    cat > mozconfig << "EOF"
 # If you have a multicore machine, all cores will be used by default.
 # If desired, you can reduce the number of cores used, e.g. to 1, by
 # uncommenting the next line and setting a valid number of CPU cores.
@@ -83,6 +88,7 @@ ac_add_options --with-system-zlib
 
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 EOF
+fi
 echo "${bold}Please, review firefox config carefully${normal}"
 echo "Press ENTER to edit firefox config"
 read
@@ -94,11 +100,13 @@ make
 
 function pkginstall {
 cd $pkgdir/$pkgname-$pkgver
+mkdir -pv ${installdir}${dbdir}/conf
+cp -v mozconfig ${installdir}/${dbdir}/conf/mozconfig
 SHELL=/bin/sh make DESTDIR=$installdir -f client.mk install INSTALL_SDK=
-chown -R 0:0 $installdir/usr/lib/firefox-44.0.2   &&
+chown -R 0:0 $installdir/usr/lib/firefox-45.0   &&
 
 mkdir -pv    $installdir/usr/lib/mozilla/plugins  &&
-ln    -sfv   ../../mozilla/plugins $installdir/usr/lib/firefox-44.0.2/browser
+ln    -sfv   ../../mozilla/plugins $installdir/usr/lib/firefox-45.0/browser
 
 mkdir -pv $installdir/usr/share/applications &&
 mkdir -pv $installdir/usr/share/pixmaps &&
@@ -118,7 +126,7 @@ MimeType=application/xhtml+xml;text/xml;application/xhtml+xml;application/vnd.mo
 StartupNotify=true
 EOF
 
-ln -sfv $installdir/usr/lib/firefox-44.0.2/browser/icons/mozicon128.png \
+ln -sfv $installdir/usr/lib/firefox-45.0/browser/icons/mozicon128.png \
         /usr/share/pixmaps/firefox.png
 }
 
