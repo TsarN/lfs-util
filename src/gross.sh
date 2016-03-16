@@ -6,6 +6,7 @@ set -e # Stop at first error
 
 urls=false
 nomake=false
+nofetch=false
 noinstall=false
 noclean=false
 noconfirm=false
@@ -17,9 +18,17 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 mkdir -p $sourcedir
-mkdir -p $dbdir{,/db}
+mkdir -p $dbdir{,/db,/conf}
 
-vercomp () {
+function _testpkg() {
+    if [[ -f $dbdir/$1 ]]; then
+        echo $2
+    else
+        echo $3
+    fi
+}
+
+function vercomp() {
     # 0 =
     # 1 >
     # 2 <
@@ -38,14 +47,18 @@ function as_root() {
 
 function pullfromsvn() {
     cd /tmp 
+    mkdir -p gross
+    cd gross
     for name in {LFS,BLFS}; do 
-        wget "http://svn.linuxfromscratch.org/$name/trunk/BOOK/packages.ent" >/dev/null 2>&1
-cat packages.ent | grep '^<!ENTITY' |  sed -e 's/<!--.*-->//' -e 's/^<!ENTITY \(.*\) \+"\(.*\)">/\1 \2/' | grep -v "^%" | sed "/-->/d" | sed 's/<!--.*$//g' > pkglist 
-grep -ho --color=none "&[a-zA-Z0-9-]\+;" pkglist | sort | uniq | sed 's/^&\(.*\);$/\1/' > pkgent 
-for i in `cat pkgent`; do grep "^$i" pkglist --color=none | sed 's|\([a-zA-Z0-9-]\+\) \+\([^ ]\+\)|s@\\\&\1;@\2@g|'; done > pkgsed 
-sed -f pkgsed pkglist | grep 'version ' | sed 's/-version//g' | sed 's/ \+/ /g' | sed 's/^ \+//g' | sed 's/ \+$//g' | sed 's/ /=/' > pkgres 
-for ii in `cat pkgres`; do pkg=`echo "$ii" | grep -o --color=none '^[^=]\+'`; if [[ -f "/var/lib/gross/db/$pkg" ]]; then . "/var/lib/gross/db/$pkg"; printf "pkgv=" > /tmp/gross.tmp; echo "$ii" | sed 's@^[^=]\+=\(.*\)$@\1@' >> /tmp/gross.tmp; . /tmp/gross.tmp; rm /tmp/gross.tmp; if [[ "$pkgver" != "$pkgv" ]]; then echo "$pkg: $pkgver -> $pkgv"; fi; fi; done 
-        rm packages.ent pkglist pkgent pkgsed pkgres
+        wget "http://svn.linuxfromscratch.org/$name/trunk/BOOK/packages.ent" -O packages.ent.$name >/dev/null 2>&1
+cat packages.ent.$name | grep '^<!ENTITY' |  sed -e 's/<!--.*-->//' -e 's/^<!ENTITY \(.*\) \+"\(.*\)">/\1 \2/' | grep -v "^%" | sed "/-->/d" | sed 's/<!--.*$//g' > pkglist.$name 
+grep -ho --color=none "&[a-zA-Z0-9-]\+;" pkglist.$name | sort | uniq | sed 's/^&\(.*\);$/\1/' > pkgent.$name
+for i in `cat pkgent.$name`; do grep "^$i" pkglist.$name --color=none | sed 's|\([a-zA-Z0-9-]\+\) \+\([^ ]\+\)|s@\\\&\1;@\2@g|'; done > pkgsed.$name
+sed -f pkgsed.$name pkglist.$name | grep 'version ' | sed 's/-version//g' | sed 's/ \+/ /g' | sed 's/^ \+//g' | sed 's/ \+$//g' | sed 's/ /=/' > pkgres.$name
+for ii in `cat pkgres.$name`; do pkg=`echo "$ii" | grep -o --color=none '^[^=]\+'`; if [[ -f "/var/lib/gross/db/$pkg" ]]; then . "/var/lib/gross/db/$pkg"; printf "pkgv=" > /tmp/gross.tmp; echo "$ii" | sed 's@^[^=]\+=\(.*\)$@\1@' >> /tmp/gross.tmp; . /tmp/gross.tmp; rm /tmp/gross.tmp; if [[ "$pkgver" != "$pkgv" ]]; then echo "$pkg: $pkgver -> $pkgv"; fi; fi; done 
+        if ! $noclean; then
+            rm packages.ent.$name pkglist.$name pkgent.$name pkgsed.$name pkgres.$name
+        fi
     done
 }
 
@@ -72,42 +85,52 @@ function installpkg {
     if ! $noconfirm; then
         read -p "Do you want to edit build script? [y/N] "
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            ${EDITOR:-vim} "$filename"
+            as_root ${EDITOR:-vim} "$filename"
             . "$filename"
         fi
     fi
     if ! $nomake; then
-        if [[ `type -t pkgfetch` = "function" ]]; then
-            echo "${bold}Downloading and unpacking package...${normal}"
-            pkgfetch
-        else
-            progress=0
-            for file in ${src[@]}; do
-                progress=$((progress + 1))
-                echo "${bold}Downloading ${normal}${file} ${bold}($progress/${#src[@]})${normal}"
-                if [[ "$file" == http* ]] || [[ "$file" == ftp* ]]; then
-                    if [[ ! -f ${sourcedir}/$(basename $file) ]]; then
-                        wget "$file" -O "${sourcedir}/$(basename $file)"
+        if ! $nofetch; then
+            if [[ `type -t pkgfetch` = "function" ]]; then
+                echo "${bold}Downloading and unpacking package...${normal}"
+                pkgfetch
+            else
+                progress=0
+                for file in ${src[@]}; do
+                    progress=$((progress + 1))
+                    echo "${bold}Downloading ${normal}${file} ${bold}($progress/${#src[@]})${normal}"
+                    if [[ "$file" == http* ]] || [[ "$file" == ftp* ]]; then
+                        if [[ ! -f ${sourcedir}/$(basename $file) ]]; then
+                            #wget "$file" -O "${sourcedir}/$(basename $file)"
+                            rm -f "${sourcedir}/.$(basename $file).PART"
+                            wget "$file" -O "${sourcedir}/.$(basename $file).PART"
+                            mv "${sourcedir}/.$(basename $file).PART" "${sourcedir}/$(basename $file)"
+                        fi
                     fi
-                fi
-                if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file"; fi
-                if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file"; fi
-                echo "${bold}Extracting ${normal}$(basename $file)"
-                if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                elif [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                elif [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                elif [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                elif [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; 
-                elif [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; 
-                elif [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; 
-                else cp "${sourcedir}/$(basename $file)" "${pkgdir}"; fi
-            done
+                    if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file"; fi
+                    if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file"; fi
+                    echo "${bold}Extracting ${normal}$(basename $file)"
+                    if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                    elif [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                    elif [[ "$file" == *.tgz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                    elif [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                    elif [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
+                    elif [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; 
+                    elif [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; 
+                    elif [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; 
+                    elif [[ -f "$sourcedir/$(basename $file)" ]]; then cp -r "${sourcedir}/$(basename $file)" "${pkgdir}"; fi
+                done
+            fi
+        else
+            echo "${bold}Skipped downloading${normal}"
         fi
         echo "${bold}Compiling package...${normal}"
         pkgmake
     else
         echo "${bold}Skipped compiling${normal}"
-	cd $pkgdir/$pkgname-$pkgver
+        if [[ -d "$pkgdir/$pkgname-$pkgver" ]]; then
+            cd $pkgdir/$pkgname-$pkgver
+        fi
     fi
     if ! $noinstall; then
         echo "${bold}Registering package...${normal} - $installdir"
@@ -156,6 +179,9 @@ function mergepkg {
     for II in "$@"; do
         builddeptree "${dbdir}/db/${II}"
         g_deptree+=($II)
+        if $buildtreefail; then
+            exit 1
+        fi
     done
     if ! $noconfirm; then
         echo "About to merge these packages:"
@@ -214,6 +240,9 @@ function getpkgversion {
         grep "^pkgver" < "$filename" > /tmp/gross.tmp
         . "/tmp/gross.tmp"
         rm /tmp/gross.tmp
+    else
+        pkgname=$(basename $1)
+        pkgver=0
     fi
 }
 
@@ -267,7 +296,11 @@ function isdepsatisfiable {
     fi
 
     # Here magic happens: we check versions
-    echo "$pkg" | sed 's/^\([a-zA-Z0-9-]\+\)\(>=\|<=\|=\|<\|>\)\(.*\)$/_pkgname="\1"\n_pkgif="\2"\n_pkgver="\3"/' > /tmp/gross.tmp
+    echo "$pkg" | sed -n 's/^\([a-zA-Z0-9-]\+\)\(>=\|<=\|=\|<\|>\)\(.*\)$/_pkgname="\1"\n_pkgif="\2"\n_pkgver="\3"/p' > /tmp/gross.tmp
+    if [[ ! -s /tmp/gross.tmp ]]; then
+        sstatus=1; return
+        rm -f /tmp/gross.tmp
+    fi
     . /tmp/gross.tmp
     rm /tmp/gross.tmp
 
@@ -315,6 +348,7 @@ function isdepsatisfiable {
 }
 
 g_deptree=() # builddeptree return variable
+buildtreefail=false
 
 function builddeptree {
     declare dep
@@ -329,7 +363,7 @@ function builddeptree {
                 isdepsatisfiable "${dep}"
                 if [[ $sstatus -eq 1 ]]; then
                     echo "Unable to satisfy dependency ${bold}${dep}${normal}"
-                    exit 1
+                    buildtreefail=true
                 fi
                 if [[ $sstatus -eq 2 ]]; then
                     if ! (containsElement ${dep} ${g_deptree[@]} || containsElement ${dep}_DEP ${g_deptree[@]}); then
@@ -394,6 +428,8 @@ for arg in "${@:1}"; do
         urls=true
     elif [[ $arg = "--nomake" ]]; then
         nomake=true
+    elif [[ $arg = "--nofetch" ]]; then
+        nofetch=true
     elif [[ $arg = "--noinstall" ]]; then
         noinstall=true
     elif [[ $arg = "--noclean" ]]; then
@@ -414,7 +450,7 @@ if [ "$operation" = "clean" ]; then
         exit
     fi
     echo "${bold}Removing temporary files...${normal}"
-    rm -rfv /var/tmp/gross/*
+    rm -rf /var/tmp/gross/*
 fi
 
 if [ "$operation" = "info" ] || [ "$operation" = "syncinfo" ]; then
