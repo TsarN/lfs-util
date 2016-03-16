@@ -1,7 +1,7 @@
 deps=()
 pkgname=glibc
 pkgver=2.23
-src=("http://ftp.gnu.org/gnu/glibc/glibc-2.23.tar.xz" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc2/glibc-2.23-fhs-1.patch")
+src=("http://ftp.gnu.org/gnu/glibc/glibc-2.23.tar.xz" "http://www.linuxfromscratch.org/patches/lfs/7.9/glibc-2.23-fhs-1.patch")
 website="http://www.gnu.org/software/libc/"
 diskusage="1.1 GB"
 buildtime="17.4 SBU"
