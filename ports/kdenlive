@@ -1,6 +1,6 @@
 deps=(kf5 mlt)
 pkgname=kdenlive
-pkgver=15.04.3
+pkgver=15.12.3
 src=("http://download.kde.org/stable/applications/${pkgver}/src/kdenlive-${pkgver}.tar.xz")
 if [ "$_GROSSUSE_devversion" = true ]; then
     pkgver=16.04.dev
