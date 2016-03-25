@@ -1,7 +1,7 @@
 deps=(glib libxml2)
 pkgname=shared-mime-info
-pkgver=1.5
-src=("http://freedesktop.org/~hadess/shared-mime-info-1.5.tar.xz")
+pkgver=1.6
+src=("http://freedesktop.org/~hadess/shared-mime-info-1.6.tar.xz")
 website=
 diskusage="20 MB (with tests)"
 buildtime="0.5 SBU (with tests)"

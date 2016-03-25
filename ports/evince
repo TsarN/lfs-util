@@ -1,0 +1,21 @@
+deps=(adwaita-icon-theme gsettings-desktop-schemas gtk3 itstool libxml2 gnome-keyring gobject-introspection libsecret poppler)
+pkgname=evince
+pkgver=3.18.2
+src=("http://ftp.gnome.org/pub/gnome/sources/evince/3.18/evince-3.18.2.tar.xz")
+website=
+diskusage="92 MB"
+buildtime="1.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --enable-introspection --disable-static --disable-nautilus
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

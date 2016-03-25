@@ -1,0 +1,21 @@
+deps=(gst-plugins-base libxfce4ui libnotify taglib)
+pkgname=parole
+pkgver=0.8.1
+src=("http://archive.xfce.org/src/apps/parole/0.8/parole-0.8.1.tar.bz2")
+website=
+diskusage="17 MB"
+buildtime="0.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

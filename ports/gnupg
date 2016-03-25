@@ -1,0 +1,39 @@
+deps=(libassuan libgcrypt libksba npth pin-entry)
+pkgname=gnupg
+pkgver=2.1.11
+src=("https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.1.11.tar.bz2")
+website=
+diskusage="113 MB (with tests and docs)"
+buildtime="0.9 SBU (with tests and docs)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+            --enable-symcryptrun \
+            --docdir=/usr/share/doc/gnupg-2.1.11 &&
+make &&
+
+makeinfo --html --no-split \
+         -o doc/gnupg_nochunks.html doc/gnupg.texi &&
+makeinfo --plaintext       \
+         -o doc/gnupg.txt           doc/gnupg.texi
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+install -v -m755 -d $installdir/usr/share/doc/gnupg-2.1.11/html            &&
+install -v -m644    doc/gnupg_nochunks.html \
+                    $installdir/usr/share/doc/gnupg-2.1.11/html/gnupg.html &&
+install -v -m644    doc/*.texi doc/gnupg.txt \
+                    $installdir/usr/share/doc/gnupg-2.1.11
+}
+
+function pkgafterinstall {
+for f in gpg gpgv
+do
+  ln -svf ${f}2.1 /usr/share/man/man1/$f.1 &&
+  ln -svf ${f}2   /usr/bin/$f
+done
+unset f
+
+}

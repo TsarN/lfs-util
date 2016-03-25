@@ -1,7 +1,7 @@
 deps=(glib icu)
 pkgname=harfbuzz
-pkgver=1.1.3
-src=("http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.3.tar.bz2")
+pkgver=1.2.4
+src=("http://www.freedesktop.org/software/harfbuzz/release/${pkgname}-${pkgver}.tar.bz2")
 website=
 diskusage="53 MB (with tests)"
 buildtime="0.4 SBU (with tests)"

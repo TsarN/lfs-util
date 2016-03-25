@@ -1,10 +1,10 @@
 deps=(nettle libtasn1 p11-kit)
 pkgname=gnutls
-pkgver=3.4.9
-src=("ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/gnutls-3.4.9.tar.xz")
+pkgver=3.4.10
+src=("ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/gnutls-3.4.10.tar.xz")
 website=
-diskusage=
-buildtime=
+diskusage="129 MB"
+buildtime="0.8 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
@@ -18,5 +18,5 @@ make -C doc/reference DESTDIR=$installdir install-data-local
 }
 
 function pkgafterinstall {
-cd $pkgdir/$pkgname-$pkgver
+:
 }

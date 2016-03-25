@@ -1,0 +1,21 @@
+deps=(gtk2 xfconf startup-notification)
+pkgname=libxfce4ui
+pkgver=4.12.1
+src=("http://archive.xfce.org/src/xfce/libxfce4ui/4.12/libxfce4ui-4.12.1.tar.bz2")
+website=
+diskusage="9.9 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

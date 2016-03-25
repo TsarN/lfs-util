@@ -1,0 +1,21 @@
+deps=()
+pkgname=ruby
+pkgver=2.3.0
+src=("http://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.xz")
+website=
+diskusage="614 MB, with checks (additional 478 MB for C API docs)"
+buildtime="5.5 SBU, with checks (additional 0.5 SBU for C API docs)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --enable-shared --docdir=/usr/share/doc/ruby-2.3.0
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

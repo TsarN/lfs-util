@@ -8,16 +8,22 @@ urls=false
 nomake=false
 nofetch=false
 noinstall=false
+noregister=false
 noclean=false
 noconfirm=false
+
+sourcedir=/usr/src
+builddir=/var/tmp/gross
 
 . /etc/gross
 
 if [[ $EUID -ne 0 ]]; then
     sourcedir="$HOME/.local/src"
+    builddir="$HOME/.local/tmp/gross"
 fi
 
 mkdir -p $sourcedir
+mkdir -p $builddir
 mkdir -p $dbdir{,/db,/conf}
 
 function _testpkg() {
@@ -78,9 +84,9 @@ function installpkg {
     unset -f pkgfetch
     . "$filename"
     echo "${bold}Installing package from${normal} $filename"
-    pkgdir="/var/tmp/gross/$pkgname-$pkgver"
+    pkgdir="${builddir}/$pkgname-$pkgver"
     mkdir -p "$pkgdir"
-    installdir="/var/tmp/gross/$pkgname-$pkgver-install"
+    installdir="${builddir}/$pkgname-$pkgver-install"
     mkdir -pv $installdir
     if ! $noconfirm; then
         read -p "Do you want to edit build script? [y/N] "
@@ -98,27 +104,33 @@ function installpkg {
                 progress=0
                 for file in ${src[@]}; do
                     progress=$((progress + 1))
-                    echo "${bold}Downloading ${normal}${file} ${bold}($progress/${#src[@]})${normal}"
+                    saveas=$(basename $file)
+                    if [[ "$file" == *::* ]]; then
+                        saveas=`echo "$file" | sed 's/::.*$//'`
+                        saveas=$(basename "$saveas")
+                        file=`echo "$file" | sed 's/^.*:://'`
+                    fi
+                    echo "${bold}Downloading ${normal}${file} ${bold}as${normal} $saveas ${bold}($progress/${#src[@]})${normal}"
                     if [[ "$file" == http* ]] || [[ "$file" == ftp* ]]; then
-                        if [[ ! -f ${sourcedir}/$(basename $file) ]]; then
-                            #wget "$file" -O "${sourcedir}/$(basename $file)"
-                            rm -f "${sourcedir}/.$(basename $file).PART"
-                            wget "$file" -O "${sourcedir}/.$(basename $file).PART"
-                            mv "${sourcedir}/.$(basename $file).PART" "${sourcedir}/$(basename $file)"
+                        if [[ ! -f ${sourcedir}/${saveas} ]]; then
+                            rm -f "${sourcedir}/.${saveas}.PART"
+                            wget "$file" -O "${sourcedir}/.${saveas}.PART"
+                            mv "${sourcedir}/.${saveas}.PART" "${sourcedir}/${saveas}"
                         fi
                     fi
-                    if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file"; fi
-                    if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file"; fi
-                    echo "${bold}Extracting ${normal}$(basename $file)"
-                    if [[ "$file" == *.tar.xz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                    elif [[ "$file" == *.tar.gz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                    elif [[ "$file" == *.tgz  ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                    elif [[ "$file" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                    elif [[ "$file" == *.tar ]]; then tar -xf "${sourcedir}/$(basename $file)" -C $pkgdir; 
-                    elif [[ "$file" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/$(basename $file)"; 
-                    elif [[ "$file" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/$(basename $file)"; 
-                    elif [[ "$file" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/$(basename $file)"; 
-                    elif [[ -f "$sourcedir/$(basename $file)" ]]; then cp -r "${sourcedir}/$(basename $file)" "${pkgdir}"; fi
+                    if [[ "$file" == git* ]]; then cd "$pkgdir" && git clone "$file" "$saveas"; fi
+                    if [[ "$file" == svn* ]]; then cd "$pkgdir" && svn co "$file" "$saveas"; fi
+                    echo "${bold}Extracting ${normal}${saveas}"
+                    if [[ "$saveas" == *.tar.xz  ]]; then tar -xf "${sourcedir}/${saveas}" -C $pkgdir; 
+                    elif [[ "$saveas" == *.tar.gz  ]]; then tar -xf "${sourcedir}/${saveas}" -C $pkgdir; 
+                    elif [[ "$saveas" == *.tgz  ]]; then tar -xf "${sourcedir}/${saveas}" -C $pkgdir; 
+                    elif [[ "$saveas" == *.tar.bz2 ]]; then tar -xf "${sourcedir}/${saveas}" -C $pkgdir; 
+                    elif [[ "$saveas" == *.tar ]]; then tar -xf "${sourcedir}/${saveas}" -C $pkgdir; 
+                    elif [[ "$saveas" == *.zip ]]; then cd $pkgdir && unzip "${sourcedir}/${saveas}"; 
+                    elif [[ "$saveas" == *.rar ]]; then cd $pkgdir && unrar e "${sourcedir}/${saveas}"; 
+                    elif [[ "$saveas" == *.exe ]]; then cd $pkgdir && cabextract "${sourcedir}/${saveas}"; 
+                    elif [[ "$saveas" == *.deb ]]; then cd $pkgdir && ar vx "${sourcedir}/${saveas}"; 
+                    elif [[ -f "$sourcedir/${saveas}" ]]; then cp -r "${sourcedir}/${saveas}" "${pkgdir}"; fi
                 done
             fi
         else
@@ -133,8 +145,10 @@ function installpkg {
         fi
     fi
     if ! $noinstall; then
-        echo "${bold}Registering package...${normal} - $installdir"
         pkginstall 
+    fi
+    if ! $noregister; then
+        echo "${bold}Registering package...${normal} - $installdir"
         pkg=`echo "$i" | sed -e "s/\(.*\)_DEP/\1/g"` # Removing _DEP (for dependencies)
         if ispkginstalled "${pkg}"; then
             forceunmerge=true
@@ -160,11 +174,16 @@ function installpkg {
     else
         echo "${bold}Skipped installation${normal}"
     fi
-    if ! $noclean; then
+    if ! $noclean && ! $noinstall; then
         echo "${bold}Cleaning up...${normal}"
         rm -rf "$pkgdir" "$installdir"
     else
         echo "${bold}Skipped cleaning up${normal}"
+    fi
+    if which notify-send; then
+        set +e
+        notify-send "Done ${pkgname}"
+        set -e
     fi
 }
 
@@ -237,9 +256,13 @@ function ispkginstalled {
 function getpkgversion {
     filename=$1
     if [ -f "$filename" ]; then
-        grep "^pkgver" < "$filename" > /tmp/gross.tmp
-        . "/tmp/gross.tmp"
-        rm /tmp/gross.tmp
+        if grep "^files=" "$filename"; then
+            sed -e '/^files=/q' -ne '$ !p' < "$filename" > /tmp/gross.tmp
+            . "/tmp/gross.tmp"
+            rm /tmp/gross.tmp
+        else
+            . "$filename"
+        fi
     else
         pkgname=$(basename $1)
         pkgver=0
@@ -432,10 +455,16 @@ for arg in "${@:1}"; do
         nofetch=true
     elif [[ $arg = "--noinstall" ]]; then
         noinstall=true
+    elif [[ $arg = "--noregister" ]]; then
+        noregister=true
     elif [[ $arg = "--noclean" ]]; then
         noclean=true
     elif [[ $arg = "--noconfirm" ]]; then
         noconfirm=true
+    elif [[ $arg == "--use="* ]]; then
+        eval "_GROSSUSE_`echo $arg | cut -d'=' -f 2`=true"
+    elif [[ $arg == "--nouse="* ]]; then
+        eval "_GROSSUSE_`echo $arg | cut -d'=' -f 2`=false"
     else
         arguments+=($arg)
     fi
@@ -450,7 +479,7 @@ if [ "$operation" = "clean" ]; then
         exit
     fi
     echo "${bold}Removing temporary files...${normal}"
-    rm -rf /var/tmp/gross/*
+    rm -rf ${builddir}/*
 fi
 
 if [ "$operation" = "info" ] || [ "$operation" = "syncinfo" ]; then
@@ -574,7 +603,7 @@ if [ "$operation" = "list-outdated" ]; then
         set +e
         vercomp "$localver" "$remotever"
         if [[ $? -eq 2 ]]; then
-            echo "$pkg-$localver -> $pkg-$remotever"
+            echo "$pkg-$localver -> $pkg-$remotever # Estimated build time: $buildtime"
         fi
         set -e
     done
@@ -608,9 +637,11 @@ if [ "$operation" = "upgrade" ]; then
 fi
 
 if [ "$operation" = "new-package" ]; then
-    cp -v ${dbdir}/db/dummy "${dbdir}/db/${arguments[1]}"
-    sed -i "s@^pkgname=@pkgname=${arguments[1]}@" "${dbdir}/db/${arguments[1]}"
-    vim "${dbdir}/db/${arguments[1]}"
+    if [[ ! -f ${dbdir}/db/${arguments[1]} ]]; then
+        as_root cp -v ${dbdir}/db/dummy "${dbdir}/db/${arguments[1]}"
+        as_root sed -i "s@^pkgname=@pkgname=${arguments[1]}@" "${dbdir}/db/${arguments[1]}"
+    fi
+    as_root vim "${dbdir}/db/${arguments[1]}"
 fi
 
 if [ "$operation" = "trigger-post-install-hook" ]; then

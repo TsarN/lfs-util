@@ -1,0 +1,25 @@
+deps=(cmake)
+pkgname=taglib
+pkgver=1.10
+src=("https://taglib.github.io/releases/taglib-1.10.tar.gz")
+website=
+diskusage="12 MB"
+buildtime="0.3 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_BUILD_TYPE=Release ..
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver/build
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

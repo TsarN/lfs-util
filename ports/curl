@@ -1,7 +1,7 @@
 deps=()
 pkgname=curl
-pkgver=7.47.1
-src=("https://curl.haxx.se/download/curl-7.47.1.tar.lzma")
+pkgver=7.48.0
+src=("https://curl.haxx.se/download/curl-${pkgver}.tar.lzma")
 website=
 diskusage="56 MB (with tests)"
 buildtime="0.4 SBU"
@@ -19,8 +19,8 @@ rm -rf docs/examples/.deps
 
 find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \;
 mkdir -vp $installdir/usr/share/doc
-install -v -d -m755 $installdir/usr/share/doc/curl-7.47.1
-cp -v -R docs/* $installdir/usr/share/doc/curl-7.47.1
+install -v -d -m755 $installdir/usr/share/doc/curl-${pkgver}
+cp -v -R docs/* $installdir/usr/share/doc/curl-${pkgver}
 rm -rf docs
 mv -i docs-save doc
 }

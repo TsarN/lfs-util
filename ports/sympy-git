@@ -1,0 +1,21 @@
+deps=(python2 python3 mpmath)
+pkgname=sympy-git
+pkgver=r24503
+src=("git://github.com/sympy/sympy.git")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/sympy.git
+}
+
+function pkginstall {
+cd $pkgdir/sympy.git
+python2 setup.py install --root "$installdir" --optimize=1
+python3 setup.py install --root $installdir --optimize=1
+}
+
+function pkgafterinstall {
+cd $installdir
+}

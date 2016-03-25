@@ -1,0 +1,26 @@
+deps=(python3)
+pkgname=youtube-dl
+pkgver=2016.01.09
+src=("http://youtube-dl.org/downloads/${pkgver}/${pkgname}-${pkgver}.tar.gz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname
+sed -i 's|etc/bash_completion.d|share/bash-completion/completions|' setup.py
+sed -i 's|etc/fish/completions|share/fish/completions|' setup.py
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname
+python setup.py install --root="${installdir}/" --optimize=1
+mv "${installdir}/usr/share/bash-completion/completions/youtube-dl.bash-completion" \
+"${installdir}/usr/share/bash-completion/completions/youtube-dl"
+install -Dm644 youtube-dl.zsh "${installdir}/usr/share/zsh/site-functions/_youtube-dl"
+install -Dm644 LICENSE "${installdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,28 @@
+deps=(which)
+pkgname=boost
+pkgver=1.60.0
+src=("http://downloads.sourceforge.net/boost/boost_1_60_0.tar.bz2")
+website=
+diskusage="899 MB (with Boost.Build's regression test)"
+buildtime="5.5 SBU (with Boost.Build's regression test)"
+
+function pkgmake {
+cd $pkgdir/boost_1_60_0
+sed -e '/using python/ s@;@: /usr/include/python${PYTHON_VERSION/3*/${PYTHON_VERSION}m} ;@' \
+    -i bootstrap.sh
+sed -e '1 i#ifndef Q_MOC_RUN' \
+-e '$ a#endif'            \
+-i boost/type_traits/detail/has_binary_operator.hpp &&
+
+./bootstrap.sh --prefix=/usr &&
+./b2 stage threading=multi link=shared -j4
+}
+
+function pkginstall {
+cd $pkgdir/boost_1_60_0
+./b2 install threading=multi link=shared --prefix=$installdir/usr -j4
+}
+
+function pkgafterinstall {
+cd $installdir
+}

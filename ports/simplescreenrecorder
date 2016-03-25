@@ -1,0 +1,22 @@
+deps=(qt4 ffmpeg alsa-lib mesa glu xorg-libraries)
+pkgname=simplescreenrecorder
+pkgver=0.3.6
+src=("$pkgname-$pkgver.tar.gz::https://github.com/MaartenBaert/ssr/archive/0.3.6.tar.gz")
+website="http://www.maartenbaert.be/simplescreenrecorder"
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/ssr-$pkgver
+./configure --prefix=/usr --disable-assert --without-pulseaudio --without-jack
+make
+}
+
+function pkginstall {
+cd $pkgdir/ssr-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

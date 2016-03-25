@@ -1,0 +1,30 @@
+deps=(libusb python2)
+pkgname=usbutils
+pkgver=008
+src=("http://ftp.kernel.org/pub/linux/utils/usb/usbutils/usbutils-008.tar.xz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i '/^usbids/ s:usb.ids:hwdata/&:' lsusb.py &&
+
+./configure --prefix=/usr --datadir=/usr/share/hwdata &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mkdir -p $installdir/usr/bin
+cat > $installdir/usr/bin/update-usb-ids << EOF
+echo "Updating USB IDs"
+mkdir -p /usr/share/hwdata
+sudo wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids
+EOF
+chmod +x $installdir/usr/bin/update-usb-ids
+}
+
+function pkgafterinstall {
+/usr/bin/update-usb-ids
+}

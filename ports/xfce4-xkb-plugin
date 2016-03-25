@@ -1,0 +1,26 @@
+deps=(librsvg libxklavier xfce4-panel)
+pkgname=xfce4-xkb-plugin
+pkgver=0.7.1
+src=("http://archive.xfce.org/src/panel-plugins/xfce4-xkb-plugin/0.7/xfce4-xkb-plugin-0.7.1.tar.bz2")
+website=
+diskusage="7.8 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -e 's|xfce4/panel-plugins|xfce4/panel/plugins|' \
+-i panel-plugin/{Makefile.in,xkb-plugin.desktop.in.in} 
+
+./configure --prefix=/usr         \
+--libexecdir=/usr/lib \
+--disable-debug 
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

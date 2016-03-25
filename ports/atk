@@ -1,7 +1,7 @@
 deps=(glib gobject-introspection)
 pkgname=atk
-pkgver=2.18.0
-src=("http://ftp.gnome.org/pub/gnome/sources/atk/2.18/atk-2.18.0.tar.xz")
+pkgver=2.20.0
+src=("http://ftp.gnome.org/pub/gnome/sources/atk/2.20/${pkgname}-${pkgver}.tar.xz")
 website=
 diskusage="16 MB"
 buildtime="0.1 SBU"

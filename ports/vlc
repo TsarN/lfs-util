@@ -1,0 +1,48 @@
+deps=(alsa-lib ffmpeg liba52 libgcrypt libmad lua xorg-server)
+pkgname=vlc
+pkgver=2.2.2
+src=("http://download.videolan.org/vlc/2.2.2/vlc-2.2.2.tar.xz")
+website=
+diskusage="679 MB (with tests)"
+buildtime="4.4 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+SAVEPATH=$PKG_CONFIG_PATH &&
+PKG_CONFIG_PATH="\
+`echo $PKG_CONFIG_PATH | sed 's@:/opt/qt5/lib/pkgconfig@@'`"
+sed -i 's/ifndef __FAST_MATH__/if 0/g' configure.ac
+
+sed -e 's:libsmbclient.h:samba-4.0/&:' \
+    -i modules/access/smb.c &&
+
+sed -e '/LUA_C/ i #define LUA_COMPAT_APIINTCASTS' \
+    -i modules/lua/vlc.h    &&
+
+sed -e '/core.h/ {
+        a #include <opencv2/imgproc/imgproc_c.h>
+        a #include <opencv2/imgproc/imgproc.hpp>
+    }' \
+    -i modules/video_filter/opencv_example.cpp &&
+
+./bootstrap &&
+
+OPENCV_LIBS="-L/usr/share/OpenCV" \
+./configure --prefix=/usr &&
+
+sed -e '/seems to be moved/s/^/#/' \
+    -i autotools/ltmain.sh libtool &&
+CFLAGS='-fPIC -O2 -Wall -Wextra -DLUA_COMPAT_5_1' make 
+
+PKG_CONFIG_PATH=$SAVEPATH &&
+unset SAVEPATH
+}
+
+function pkginstall {
+make DESTDIR=$installdir docdir=/usr/share/doc/vlc-2.2.2 install
+}
+
+function pkgafterinstall {
+gtk-update-icon-cache &&
+update-desktop-database
+}

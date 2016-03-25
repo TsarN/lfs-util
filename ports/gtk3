@@ -1,7 +1,7 @@
 deps=(at-spi2-atk gdk-pixbuf libepoxy pango hicolor-icon-theme adwaita-icon-theme gobject-introspection)
 pkgname=gtk3
-pkgver=3.18.7
-src=("http://ftp.gnome.org/pub/gnome/sources/gtk+/3.18/gtk+-3.18.7.tar.xz")
+pkgver=3.18.8
+src=("http://ftp.gnome.org/pub/gnome/sources/gtk+/3.18/gtk+-3.18.8.tar.xz")
 website=
 diskusage="502 MB (with tests)"
 buildtime="6.6 SBU (with tests)"

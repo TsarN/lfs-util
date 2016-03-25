@@ -1,0 +1,28 @@
+deps=(frei0r qt5)
+pkgname=mlt
+pkgver=6.0.0
+src=("http://sourceforge.net/projects/mlt/files/${pkgname}-${pkgver}.tar.gz")
+website=
+diskusage="66 MB"
+buildtime="0.3 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr            \
+--avformat-vdpau         \
+--enable-gpl             \
+--enable-gpl3            \
+--enable-opengl          \
+--disable-gtk2           \
+--qt-libdir=$QT5DIR/lib  \
+--qt-includedir=$QT5DIR/include
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

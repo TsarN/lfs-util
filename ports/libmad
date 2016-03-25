@@ -1,0 +1,39 @@
+deps=()
+pkgname=libmad
+pkgver=0.15.1b
+src=("http://downloads.sourceforge.net/mad/libmad-0.15.1b.tar.gz" "http://www.linuxfromscratch.org/patches/blfs/svn/libmad-0.15.1b-fixes-1.patch")
+website=
+diskusage="4.2 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../libmad-0.15.1b-fixes-1.patch
+sed "s@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@g" -i configure.ac
+touch NEWS AUTHORS ChangeLog 
+autoreconf -fi 
+./configure --prefix=/usr --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mkdir -p $installdir/usr/lib/pkgconfig
+cat > $installdir/usr/lib/pkgconfig/mad.pc << "EOF"
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: mad
+Description: MPEG audio decoder
+Requires:
+Version: 0.15.1b
+Libs: -L${libdir} -lmad
+Cflags: -I${includedir}
+EOF
+}
+
+function pkgafterinstall {
+cd $installdir
+}

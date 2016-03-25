@@ -1,0 +1,21 @@
+deps=(libpng)
+pkgname=gavl
+pkgver=1.4.0
+src=("http://sourceforge.net/projects/gmerlin/files/gavl/1.4.0/gavl-1.4.0.tar.gz")
+website=
+diskusage="50 MB"
+buildtime="0.8 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --docdir=/usr/share/doc/gavl-1.4.0 --without-doxygen
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

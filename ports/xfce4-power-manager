@@ -1,4 +1,4 @@
-deps=(libnotify upower)
+deps=(libnotify upower xfce4-panel)
 pkgname=xfce4-power-manager
 pkgver=1.4.4
 src=("http://archive.xfce.org/src/xfce/xfce4-power-manager/1.4/xfce4-power-manager-1.4.4.tar.bz2")
@@ -8,7 +8,7 @@ buildtime="0.1 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-./configure --prefix=/usr --disable-panel-plugins --sysconfdir=/etc
+./configure --prefix=/usr --sysconfdir=/etc
 make
 }
 

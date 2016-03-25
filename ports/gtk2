@@ -1,7 +1,7 @@
 deps=(atk gdk-pixbuf pango hicolor-icon-theme)
 pkgname=gtk2
-pkgver=2.24.29
-src=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-2.24.29.tar.xz")
+pkgver=2.24.30
+src=("http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-2.24.30.tar.xz")
 website=
 diskusage="370 MB (with tests)"
 buildtime="3.8 SBU (with tests)"

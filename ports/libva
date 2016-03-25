@@ -1,7 +1,7 @@
 deps=(mesa)
 pkgname=libva
-pkgver=1.6.2
-src=("http://www.freedesktop.org/software/vaapi/releases/libva/libva-1.6.2.tar.bz2")
+pkgver=1.7.0
+src=("http://www.freedesktop.org/software/vaapi/releases/libva/${pkgname}-${pkgver}.tar.bz2")
 website=
 diskusage="16 MB"
 buildtime="0.2 SBU"

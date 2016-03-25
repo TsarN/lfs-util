@@ -1,0 +1,23 @@
+deps=(ghc)
+pkgname=cabal
+pkgver=1.22.8.0
+src=("https://www.haskell.org/cabal/release/cabal-1.22.8.0/Cabal-1.22.8.0.tar.gz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/Cabal-$pkgver
+ghc -threaded --make Setup
+./Setup configure --prefix=$installdir/usr
+./Setup build 
+}
+
+function pkginstall {
+cd $pkgdir/Cabal-$pkgver
+./Setup install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

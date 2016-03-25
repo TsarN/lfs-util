@@ -1,7 +1,7 @@
 deps=(alsa-lib gtk2 nss unzip yasm zip icu libevent libvpx sqlite)
 pkgname=firefox
-pkgver=45.0
-src=("https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/45.0/source/firefox-45.0.source.tar.xz")
+pkgver=45.0.1
+src=("https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/45.0.1/source/firefox-45.0.1.source.tar.xz")
 website=
 diskusage="4.4 GB (80 MB installed)"
 buildtime="10 SBU (with parallelism=4)"
@@ -103,10 +103,10 @@ cd $pkgdir/$pkgname-$pkgver
 mkdir -pv ${installdir}${dbdir}/conf
 cp -v mozconfig ${installdir}/${dbdir}/conf/mozconfig
 SHELL=/bin/sh make DESTDIR=$installdir -f client.mk install INSTALL_SDK=
-chown -R 0:0 $installdir/usr/lib/firefox-45.0   &&
+chown -R 0:0 $installdir/usr/lib/firefox-45.0.1   &&
 
 mkdir -pv    $installdir/usr/lib/mozilla/plugins  &&
-ln    -sfv   ../../mozilla/plugins $installdir/usr/lib/firefox-45.0/browser
+ln    -sfv   ../../mozilla/plugins $installdir/usr/lib/firefox-45.0.1/browser
 
 mkdir -pv $installdir/usr/share/applications &&
 mkdir -pv $installdir/usr/share/pixmaps &&
@@ -126,7 +126,7 @@ MimeType=application/xhtml+xml;text/xml;application/xhtml+xml;application/vnd.mo
 StartupNotify=true
 EOF
 
-ln -sfv $installdir/usr/lib/firefox-45.0/browser/icons/mozicon128.png \
+ln -sfv $installdir/usr/lib/firefox-45.0.1/browser/icons/mozicon128.png \
         /usr/share/pixmaps/firefox.png
 }
 

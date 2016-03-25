@@ -1,0 +1,27 @@
+deps=(xorg-libraries)
+pkgname=imagemagick
+pkgver=6.9.3-7
+src=("ftp://ftp.imagemagick.org/pub/ImageMagick/releases/ImageMagick-6.9.3-7.tar.xz")
+website=
+diskusage="193 MB"
+buildtime="2.0 SBU"
+
+function pkgmake {
+cd $pkgdir/ImageMagick-$pkgver
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --enable-hdri     \
+            --with-modules    \
+            --with-perl       \
+            --disable-static
+make
+}
+
+function pkginstall {
+cd $pkgdir/ImageMagick-$pkgver
+make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-6.9.3 DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,7 +1,7 @@
 deps=()
 pkgname=binutils
 pkgver=2.26
-src=("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2" "http://www.linuxfromscratch.org/patches/lfs/7.9/binutils-2.26-upstream_fix-2.patch")
+src=("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.bz2" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc2/binutils-2.26-upstream_fix-2.patch")
 website="http://www.gnu.org/software/binutils/"
 diskusage="447 MB"
 buildtime="2.3 SBU"

@@ -1,0 +1,22 @@
+deps=(glib libgcrypt libtasn1 p11-kit gnupg gobject-introspection gtk3 libxslt vala)
+pkgname=gcr
+pkgver=3.18.0
+src=("http://ftp.gnome.org/pub/gnome/sources/gcr/3.18/gcr-3.18.0.tar.xz")
+website=
+diskusage="81 MB (with tests)"
+buildtime="0.8 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+sed -i -r 's:"(/desktop):"/org/gnome\1:' schema/*.xml
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

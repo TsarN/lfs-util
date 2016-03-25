@@ -1,7 +1,7 @@
 deps=()
 pkgname=iso-codes
-pkgver=3.65
-src=("https://pkg-isocodes.alioth.debian.org/downloads/iso-codes-3.65.tar.xz")
+pkgver=3.66
+src=("https://pkg-isocodes.alioth.debian.org/downloads/${pkgname}-${pkgver}.tar.xz")
 website=
 diskusage="111 MB (with tests)"
 buildtime="0.2 SBU (with tests)"

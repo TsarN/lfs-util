@@ -1,0 +1,21 @@
+deps=(docbook-xml python2)
+pkgname=itstool
+pkgver=2.0.2
+src=("http://files.itstool.org/itstool/itstool-2.0.2.tar.bz2")
+website=
+diskusage="784 KB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

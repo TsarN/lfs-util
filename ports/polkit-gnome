@@ -1,0 +1,34 @@
+deps=(gtk3 polkit)
+pkgname=polkit-gnome
+pkgver=0.105
+src=("http://ftp.gnome.org/pub/gnome/sources/polkit-gnome/0.105/polkit-gnome-0.105.tar.xz")
+website=
+diskusage="5.0 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+mkdir -p $installdir/etc/xdg/autostart &&
+cat > $installdir/etc/xdg/autostart/polkit-gnome-authentication-agent-1.desktop << "EOF"
+[Desktop Entry]
+Name=PolicyKit Authentication Agent
+Comment=PolicyKit Authentication Agent
+Exec=/usr/libexec/polkit-gnome-authentication-agent-1
+Terminal=false
+Type=Application
+Categories=
+NoDisplay=true
+OnlyShowIn=GNOME;XFCE;Unity;
+AutostartCondition=GNOME3 unless-session gnome
+EOF
+}
+
+function pkgafterinstall {
+cd $installdir
+}

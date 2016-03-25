@@ -1,7 +1,7 @@
 deps=(xorg-libraries)
 pkgname=libdrm
-pkgver=2.4.66
-src=("http://dri.freedesktop.org/libdrm/libdrm-2.4.66.tar.bz2")
+pkgver=2.4.67
+src=("http://dri.freedesktop.org/libdrm/libdrm-2.4.67.tar.bz2")
 website=
 diskusage="17 MB (with tests)"
 buildtime="0.8 SBU (with tests)"

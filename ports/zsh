@@ -1,0 +1,31 @@
+deps=()
+pkgname=zsh
+pkgver=5.2
+src=("http://www.zsh.org/pub/zsh-5.2.tar.xz" "http://www.zsh.org/pub/zsh-5.2-doc.tar.xz")
+website=
+diskusage="64 MB (with docs and tests)"
+buildtime="1.1 SBU (with docs and tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc/zsh --enable-etcdir=/etc/zsh `_testpkg pcre --enable-pcre`
+make
+makeinfo  Doc/zsh.texi --plaintext -o Doc/zsh.txt     
+makeinfo  Doc/zsh.texi --html      -o Doc/html        
+makeinfo  Doc/zsh.texi --html --no-split --no-headers -o Doc/zsh.html
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+make infodir=$installdir/usr/share/info install.info
+mkdir -p $installdir/usr/share/doc/zsh-5.2
+install -v -m755 -d                 $installdir/usr/share/doc/zsh-5.2/html 
+install -v -m644 Doc/html/*         $installdir/usr/share/doc/zsh-5.2/html 
+install -v -m644 Doc/zsh.{html,txt} $installdir/usr/share/doc/zsh-5.2
+make htmldir=$installdir/usr/share/doc/zsh-5.2/html install.html
+install -v -m644 Doc/zsh.dvi $installdir/usr/share/doc/zsh-5.2
+}
+
+function pkgafterinstall {
+echo "${bold}You should probably update /etc/shells to include zsh${normal}"
+}

@@ -1,0 +1,24 @@
+deps=()
+pkgname=babl
+pkgver=0.1.14
+src=("http://download.gimp.org/pub/babl/0.1/babl-0.1.14.tar.bz2")
+website=
+diskusage="15 MB"
+buildtime="0.2"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-docs
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+install -v -m755 -d $installdir/usr/share/gtk-doc/html/babl/graphics &&
+install -v -m644 docs/*.{css,html} $installdir/usr/share/gtk-doc/html/babl &&
+install -v -m644 docs/graphics/*.{html,png,svg} $installdir/usr/share/gtk-doc/html/babl/graphics
+}
+
+function pkgafterinstall {
+cd $installdir
+}

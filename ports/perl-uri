@@ -1,0 +1,22 @@
+deps=()
+pkgname=perl-uri
+pkgver=1.71
+src=("http://www.cpan.org/authors/id/E/ET/ETHER/URI-1.71.tar.gz")
+website=
+diskusage=""
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/URI-$pkgver
+perl Makefile.PL
+make
+make test
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,21 @@
+deps=(libwnck libxfce4ui which xorg-applications desktop-file-utils shared-mime-info polkit-gnome xfdesktop)
+pkgname=xfce4-session
+pkgver=4.12.1
+src=("http://archive.xfce.org/src/xfce/xfce4-session/4.12/xfce4-session-4.12.1.tar.bz2")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc --disable-legacy-sm
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+    :
+}

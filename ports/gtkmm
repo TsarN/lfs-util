@@ -1,0 +1,21 @@
+deps=()
+pkgname=gtkmm
+pkgver=
+src=("http://ftp.gnome.org/pub/gnome/sources/gtkmm/2.24/gtkmm-2.24.4.tar.xz")
+website=
+diskusage="296"
+buildtime=""
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

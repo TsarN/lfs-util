@@ -1,0 +1,28 @@
+deps=(python3 python2)
+pkgname=mpmath
+pkgver=0.19
+src=("http://mpmath.org/files/mpmath-${pkgver}.tar.gz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+rm -rf $pkgdir/$pkgname-python3-$pkgver
+cp -R $pkgdir/$pkgname-$pkgver $pkgdir/$pkgname-python3-$pkgver
+
+cd $pkgdir/$pkgname-$pkgver
+python2 setup.py build
+
+cd $pkgdir/$pkgname-python3-$pkgver
+python3 setup.py build
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+python2 setup.py install --root "$installdir" --optimize=1
+python3 setup.py install --root "$installdir" --optimize=1
+}
+
+function pkgafterinstall {
+cd $installdir
+}

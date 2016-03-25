@@ -1,7 +1,7 @@
-deps=(openssl pixman xorg-fonts xkeyboard-config libepoxy xcb-util-keysums)
+deps=(openssl pixman xorg-fonts xkeyboard-config libepoxy xcb-util-keysyms)
 pkgname=xorg-server
 pkgver=1.18.2
-src=("http://ftp.x.org/pub/individual/xserver/xorg-server-1.18.2.tar.bz2" "http://www.linuxfromscratch.org/patches/blfs/svn/xorg-server-1.18.2-add_prime_support-1.patch" http://www.linuxfromscratch.org/patches/blfs/svn/xorg-server-1.18.2-wayland_190-1.patch)
+src=("http://ftp.x.org/pub/individual/xserver/xorg-server-1.18.2.tar.bz2" "http://www.linuxfromscratch.org/patches/blfs/svn/xorg-server-1.18.2-add_prime_support-1.patch")
 website=
 diskusage="544 MB (with tests)"
 buildtime="1.8 SBU (with tests)"
@@ -9,7 +9,6 @@ buildtime="1.8 SBU (with tests)"
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
 patch -Np1 -i ../xorg-server-1.18.2-add_prime_support-1.patch
-patch -Np1 -i ../xorg-server-1.18.2-wayland_190-1.patch
 ./configure $XORG_CONFIG            \
            --enable-glamor          \
            --enable-install-setuid  \

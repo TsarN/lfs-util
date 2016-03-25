@@ -1,7 +1,7 @@
 deps=(libva wayland)
 pkgname=libva-intel-driver
-pkgver=1.6.2
-src=("http://www.freedesktop.org/software/vaapi/releases/libva-intel-driver/libva-intel-driver-1.6.2.tar.bz2")
+pkgver=1.7.0
+src=("http://www.freedesktop.org/software/vaapi/releases/libva-intel-driver/${pkgname}-${pkgver}.tar.bz2")
 website=
 diskusage="16 MB"
 buildtime="0.2 SBU"

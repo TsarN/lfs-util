@@ -1,0 +1,21 @@
+deps=(gtk2 gtk3)
+pkgname=gtk-xfce-engine
+pkgver=3.2.0
+src=("http://archive.xfce.org/src/xfce/gtk-xfce-engine/3.2/gtk-xfce-engine-3.2.0.tar.bz2")
+website=
+diskusage="7.0 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --enable-gtk3
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

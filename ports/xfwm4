@@ -1,0 +1,21 @@
+deps=(libwnck libxfce4ui libxfce4util startup-notification)
+pkgname=xfwm4
+pkgver=4.12.3
+src=("http://archive.xfce.org/src/xfce/xfwm4/4.12/xfwm4-4.12.3.tar.bz2")
+website=
+diskusage="31 MB"
+buildtime="0.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

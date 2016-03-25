@@ -1,0 +1,21 @@
+deps=("python2>=2.6" "python3>=3.3" cmake)
+pkgname=ycmd
+pkgver=r0983
+src=($pkgname-$pkgver::git://github.com/Valloric/ycmd.git)
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+git submodule update --init --recursive
+./build.py --all
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+}
+
+function pkgafterinstall {
+cd $installdir
+}

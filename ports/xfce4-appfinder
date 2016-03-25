@@ -1,0 +1,21 @@
+deps=(garcon libxfce4ui)
+pkgname=xfce4-appfinder
+pkgver=4.12.0
+src=("http://archive.xfce.org/src/xfce/xfce4-appfinder/4.12/xfce4-appfinder-4.12.0.tar.bz2")
+website=
+diskusage="4.8 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,7 +1,7 @@
 deps=()
 pkgname=flash-player
-pkgver=11
-src=("https://fpdownload.adobe.com/get/flashplayer/pdc/11.2.202.569/install_flash_player_11_linux.i386.tar.gz")
+pkgver=11.2.202.577
+src=("https://fpdownload.adobe.com/get/flashplayer/pdc/${pkgver}/install_flash_player_11_linux.i386.tar.gz")
 website=
 diskusage=
 buildtime=

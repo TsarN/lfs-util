@@ -1,0 +1,22 @@
+deps=(gegl gtk2 pygtk)
+pkgname=gimp
+pkgver=2.8.16
+src=("http://download.gimp.org/pub/gimp/v2.8/gimp-2.8.16.tar.bz2")
+website=
+diskusage="632 MB"
+buildtime="4.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc --without-gvfs
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+gtk-update-icon-cache &&
+update-desktop-database
+}

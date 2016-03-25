@@ -1,0 +1,30 @@
+deps=(gavl opencv)
+pkgname=frei0r
+pkgver=15.01.27
+src=("https://files.dyne.org/frei0r/snapshots/frei0r-snapshot-27-01-15.tar.gz" "http://www.linuxfromscratch.org/patches/blfs/svn/frei0r-snapshot-27-01-15-gcc5_fix-1.patch")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/frei0r-snapshot-27-01-15
+patch -Np1 -i ../frei0r-snapshot-27-01-15-gcc5_fix-1.patch &&
+
+mkdir -vp build &&
+cd        build &&
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr    \
+-DCMAKE_BUILD_TYPE=Release     \
+-DOpenCV_DIR=/usr/share/OpenCV \
+-Wno-dev ..
+
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

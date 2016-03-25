@@ -1,0 +1,50 @@
+deps=(boost extra-cmake-modules docbook-xml docbook-xsl giflib libepoxy libgcrypt libjpeg-turbo libpng libxslt lmdb phonon shared-mime-info perl-uri) # aspell avahi libdbusmenu-qt network-manager polkit-qt
+pkgname=kf5
+pkgver=5.20
+_pkgminor=${pkgver}.0
+src=("http://download.kde.org/stable/frameworks/${pkgver}/attica-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kapidox-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/karchive-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kcodecs-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kconfig-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kcoreaddons-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdbusaddons-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdnssd-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kguiaddons-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/ki18n-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kidletime-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kimageformats-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kitemmodels-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kitemviews-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kplotting-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kwidgetsaddons-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kwindowsystem-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/solid-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/sonnet-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/threadweaver-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kauth-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kcompletion-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kcrash-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdoctools-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kpty-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kunitconversion-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kconfigwidgets-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kglobalaccel-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kpackage-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kservice-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdesu-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kemoticons-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kiconthemes-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kjobwidgets-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/knotifications-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/ktextwidgets-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kwallet-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kxmlgui-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kbookmarks-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kio-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdeclarative-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kcmutils-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/frameworkintegration-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kinit-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/knewstuff-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/knotifyconfig-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kparts-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kactivities-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kded-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdewebkit-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/ktexteditor-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kdesignerplugin-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/plasma-framework-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kpeople-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kxmlrpcclient-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/bluez-qt-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/kfilemetadata-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/baloo-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/kjs-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/kdelibs4support-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/khtml-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/kjsembed-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/kmediaplayer-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/kross-${_pkgminor}.tar.xz" "http://download.kde.org/stable/frameworks/${pkgver}/portingAids/krunner-${_pkgminor}.tar.xz")
+website=
+diskusage="1.1 GB"
+buildtime="46 SBU"
+
+function pkgmake {
+cd $pkgdir
+for url in ${src[@]}; do
+    pkg=$(basename $url)
+    packagedir=$(echo $pkg | sed 's|\.tar.*||')
+
+    if [[ ! -d $packagedir ]]; then
+        echo "${bold}Skipped $packagedir${normal}"
+        continue
+    fi
+    echo "${bold}Building $packagedir${normal}"
+
+    pushd $packagedir
+        mkdir -p build 
+        cd build
+
+        cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+        -DCMAKE_PREFIX_PATH=$QT5DIR        \
+        -DCMAKE_BUILD_TYPE=Release         \
+        -DLIB_INSTALL_DIR=lib              \
+        -DBUILD_TESTING=OFF                \
+        -Wno-dev ..
+        make
+        as_root make install
+        as_root make DESTDIR=$installdir install
+    popd
+
+    rm -rf $packagedir
+    as_root /sbin/ldconfig
+done
+}
+
+function pkginstall {
+:
+}
+
+function pkgafterinstall {
+#mv -v /opt/kf5 /opt/kf5-5.20.0
+#ln -sfvn kf5-5.20.0 /opt/kf5
+:
+}

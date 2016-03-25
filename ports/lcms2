@@ -1,0 +1,21 @@
+deps=()
+pkgname=lcms2
+pkgver=2.7
+src=("http://downloads.sourceforge.net/lcms/lcms2-2.7.tar.gz")
+website=
+diskusage="21 MB"
+buildtime="0.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,24 @@
+deps=(libatasmart libgudev libxslt polkit gobject-introspection)
+pkgname=udisks
+pkgver=2.1.6
+src=("http://udisks.freedesktop.org/releases/udisks-2.1.6.tar.bz2")
+website=
+diskusage="26 MB"
+buildtime="0.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

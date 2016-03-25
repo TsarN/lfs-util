@@ -1,0 +1,52 @@
+deps=()
+pkgname=lua
+pkgver=5.3.2
+src=("http://www.lua.org/ftp/lua-5.3.2.tar.gz" "http://www.linuxfromscratch.org/patches/blfs/svn/lua-5.3.2-shared_library-1.patch")
+website=
+diskusage="4 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+cat > lua.pc << "EOF"
+V=5.3
+R=5.3.2
+
+prefix=/usr
+INSTALL_BIN=${prefix}/bin
+INSTALL_INC=${prefix}/include
+INSTALL_LIB=${prefix}/lib
+INSTALL_MAN=${prefix}/share/man/man1
+INSTALL_LMOD=${prefix}/share/lua/${V}
+INSTALL_CMOD=${prefix}/lib/lua/${V}
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Lua
+Description: An Extensible Extension Language
+Version: ${R}
+Requires:
+Libs: -L${libdir} -llua -lm
+Cflags: -I${includedir}
+EOF
+
+patch -Np1 -i ../lua-5.3.2-shared_library-1.patch
+sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h
+make MYCFLAGS="-DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1" linux
+}
+
+function pkginstall {
+make INSTALL_TOP=$installdir/usr TO_LIB="liblua.so liblua.so.5.3 liblua.so.5.3.2" \
+     INSTALL_DATA="cp -d" INSTALL_MAN=$installdir/usr/share/man/man1 install &&
+
+mkdir -pv $installdir/usr/share/doc/lua-5.3.2 &&
+cp -v doc/*.{html,css,gif,png} $installdir/usr/share/doc/lua-5.3.2 &&
+
+install -v -m644 -D lua.pc $installdir/usr/lib/pkgconfig/lua.pc
+
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,7 +1,7 @@
 deps=(curl openssl python2)
 pkgname=git
-pkgver=2.7.1
-src=("https://www.kernel.org/pub/software/scm/git/git-2.7.1.tar.xz")
+pkgver=2.7.4
+src=("https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.xz")
 website=
 diskusage="364 MB"
 buildtime="0.8 SBU"

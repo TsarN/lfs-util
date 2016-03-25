@@ -1,0 +1,23 @@
+deps=(glu libjpeg-turbo mesa alsa-lib qt5)
+pkgname=v4l-utils
+pkgver=1.10.0
+src=("https://www.linuxtv.org/downloads/v4l-utils/v4l-utils-1.10.0.tar.bz2")
+website=
+diskusage="63 MB"
+buildtime="0.5 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

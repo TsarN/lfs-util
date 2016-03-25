@@ -1,0 +1,21 @@
+deps=(libgpg-error)
+pkgname=libksba
+pkgver=1.3.3
+src=("ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.3.tar.bz2")
+website=
+diskusage="6.5 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

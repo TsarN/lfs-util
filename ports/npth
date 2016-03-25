@@ -1,0 +1,21 @@
+deps=()
+pkgname=npth
+pkgver=1.2
+src=("ftp://ftp.gnupg.org/gcrypt/npth/npth-1.2.tar.bz2")
+website=
+diskusage="2.6 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

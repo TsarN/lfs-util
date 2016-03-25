@@ -1,0 +1,25 @@
+deps=(dbus-glib libxml2 gobject-introspection gtk3 polkit)
+pkgname=gconf
+pkgver=3.2.6
+src=("http://ftp.gnome.org/pub/gnome/sources/GConf/3.2/GConf-3.2.6.tar.xz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/GConf-$pkgver
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --disable-orbit \
+            --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+ln -s gconf.xml.defaults $installdir/etc/gconf/gconf.xml.system
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,0 +1,25 @@
+deps=(unzip libjpeg-turbo)
+pkgname=jasper
+pkgver=1.900.1
+src=("http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-1.900.1.zip" "http://www.linuxfromscratch.org/patches/blfs/svn/jasper-1.900.1-security_fixes-2.patch")
+website=
+diskusage="11.1 MB"
+buildtime="0.3 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../jasper-1.900.1-security_fixes-2.patch
+./configure --prefix=/usr    \
+            --enable-shared  \
+            --disable-static \
+            --mandir=/usr/share/man
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

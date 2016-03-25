@@ -1,0 +1,23 @@
+deps=(alsa-lib giflib xorg-libraries)
+pkgname=openjdk-bin
+pkgver=1.8.0.72
+src=("http://anduin.linuxfromscratch.org/BLFS/OpenJDK/OpenJDK-1.8.0.72/OpenJDK-1.8.0.72-`uname -m`-bin.tar.xz")
+website=
+diskusage="166 MB"
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/OpenJDK-$pkgver-`uname -m`-bin
+}
+
+function pkginstall {
+cd $pkgdir/OpenJDK-$pkgver-`uname -m`-bin
+install -vdm755 $installdir/opt/OpenJDK-$pkgver-bin
+mv -v * $installdir/opt/OpenJDK-$pkgver-bin
+as_root chown -R root:root $installdir/opt/OpenJDK-$pkgver-bin
+ln -svf OpenJDK-$pkgver-bin $installdir/opt/jdk
+}
+
+function pkgafterinstall {
+cd $installdir
+}

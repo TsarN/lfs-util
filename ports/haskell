@@ -1,0 +1,21 @@
+deps=()
+pkgname=haskell
+pkgver=7.10.3
+src=("https://haskell.org/platform/download/7.10.3/haskell-platform-7.10.3.tar.gz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-platform-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

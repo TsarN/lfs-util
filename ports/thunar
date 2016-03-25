@@ -1,0 +1,21 @@
+deps=(exo libxfce4ui lxde-icon-theme libgudev libnotify xfce4-panel)
+pkgname=thunar
+pkgver=1.6.10
+src=("http://archive.xfce.org/src/xfce/thunar/1.6/Thunar-1.6.10.tar.bz2")
+website=
+diskusage="59 MB"
+buildtime="0.6 SBU"
+
+function pkgmake {
+cd $pkgdir/Thunar-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc --docdir=/usr/share/doc/Thunar-$pkgver
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

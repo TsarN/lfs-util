@@ -1,13 +1,13 @@
 deps=()
 pkgname=sqlite
-pkgver=3.11.0
-src=("http://sqlite.org/2016/sqlite-autoconf-3110000.tar.gz")
+pkgver=3.11.1
+src=("http://sqlite.org/2016/sqlite-autoconf-3110100.tar.gz")
 website=
 diskusage="83 MB (with Optional Documentation)"
 buildtime="0.6 SBU"
 
 function pkgmake {
-cd $pkgdir/$pkgname-autoconf-3110000
+cd $pkgdir/$pkgname-autoconf-3110100
 ./configure --prefix=/usr --disable-static        \
             CFLAGS="-g -O2 -DSQLITE_ENABLE_FTS3=1 \
             -DSQLITE_ENABLE_COLUMN_METADATA=1     \

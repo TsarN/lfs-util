@@ -1,0 +1,21 @@
+deps=(libxfce4ui libxfce4util perl-uri)
+pkgname=exo
+pkgver=0.10.7
+src=("http://archive.xfce.org/src/xfce/exo/0.10/exo-0.10.7.tar.bz2")
+website=
+diskusage="22 MB (with tests)"
+buildtime="0.2 SBU (with tests)"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --sysconfdir=/etc
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

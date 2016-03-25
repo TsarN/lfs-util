@@ -1,0 +1,24 @@
+deps=(xorg-libraries xorg-applications xorg-server ffmpeg libdvdnav)
+pkgname=xine-lib
+pkgver=1.2.6
+src=("http://downloads.sourceforge.net/xine/xine-lib-1.2.6.tar.xz")
+website=
+diskusage="121 MB"
+buildtime="1.4 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr          \
+--disable-vcd          \
+--with-external-dvdnav \
+--docdir=/usr/share/doc/xine-lib-1.2.6
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

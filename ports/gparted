@@ -1,0 +1,21 @@
+deps=(gtkmm parted)
+pkgname=gparted
+pkgver=0.25.0
+src=("http://downloads.sourceforge.net/gparted/gparted-0.25.0.tar.gz")
+website=
+diskusage="111 MB"
+buildtime="1.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-doc --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

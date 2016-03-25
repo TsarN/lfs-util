@@ -1,0 +1,33 @@
+deps=(cmake glib qt5)
+pkgname=phonon
+pkgver=4.8.3
+src=("http://download.kde.org/stable/phonon/4.8.3/src/phonon-4.8.3.tar.xz")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+source /usr/bin/setqt5 &&
+
+sed -i "s:BSD_SOURCE:DEFAULT_SOURCE:g" cmake/FindPhononInternal.cmake &&
+
+mkdir build &&
+cd    build &&
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr    \
+-DCMAKE_BUILD_TYPE=Release     \
+-DCMAKE_INSTALL_LIBDIR=lib     \
+-DPHONON_BUILD_PHONON4QT5=ON   \
+-D__KDE_HAVE_GCC_VISIBILITY=NO \
+-Wno-dev .. &&
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

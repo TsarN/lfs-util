@@ -1,7 +1,7 @@
 deps=()
 pkgname=bash
 pkgver=4.3.30
-src=("http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz" "http://www.linuxfromscratch.org/patches/lfs/7.9/bash-4.3.30-upstream_fixes-3.patch")
+src=("http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz" "http://www.linuxfromscratch.org/patches/lfs/7.9-rc2/bash-4.3.30-upstream_fixes-3.patch")
 website="http://www.gnu.org/software/bash/"
 diskusage="49 MB"
 buildtime="2.1 SBU"

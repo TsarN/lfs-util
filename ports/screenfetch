@@ -1,0 +1,21 @@
+deps=(bash xorg-applications)
+pkgname=screenfetch
+pkgver=3.7.0
+src=("$pkgname-$pkgver.tar.gz::https://github.com/KittyKatt/screenFetch/archive/v$pkgver.tar.gz")
+website="https://github.com/KittyKatt/screenFetch"
+diskusage=
+buildtime="less than 0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/screenFetch-$pkgver
+}
+
+function pkginstall {
+cd $pkgdir/screenFetch-$pkgver
+install -Dm755 "screenfetch-dev" $installdir/usr/bin/screenfetch
+install -Dm644 "screenfetch.1" $installdir/usr/share/man/man1/screenfetch.1
+}
+
+function pkgafterinstall {
+cd $installdir
+}

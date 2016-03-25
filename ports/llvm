@@ -1,7 +1,7 @@
 deps=(libffi python2 "gcc>4.9.1") # There's a bug with gcc<=4.9.1
 pkgname=llvm
-pkgver=3.7.1
-src=("http://llvm.org/releases/3.7.1/llvm-3.7.1.src.tar.xz" "http://llvm.org/releases/3.7.1/cfe-3.7.1.src.tar.xz" "http://llvm.org/releases/3.7.1/compiler-rt-3.7.1.src.tar.xz")
+pkgver=3.8.0
+src=("http://llvm.org/releases/${pkgver}/llvm-${pkgver}.src.tar.xz" "http://llvm.org/releases/${pkgver}/cfe-${pkgver}.src.tar.xz" "http://llvm.org/releases/${pkgver}/compiler-rt-${pkgver}.src.tar.xz")
 website=
 diskusage="1.6 GB (with Clang and tests)"
 buildtime="13 SBU (with Clang, tests and parallelism = 4)"
@@ -12,7 +12,7 @@ mv $pkgdir/cfe-${pkgver}.src tools/clang
 mv $pkgdir/compiler-rt-${pkgver}.src projects/compiler-rt
 sed -r "/ifeq.*CompilerTargetArch/s#i386#i686#g" \
     -i projects/compiler-rt/make/platform/clang_linux.mk
-sed -e "s:/docs/llvm:/share/doc/llvm-3.7.1:" \
+sed -e "s:/docs/llvm:/share/doc/llvm-${pkgver}:" \
     -i Makefile.config.in &&
 
 mkdir -v build &&
@@ -27,7 +27,7 @@ CC=gcc CXX=g++                          \
              --enable-shared            \
              --enable-targets=host,r600 \
              --disable-assertions       \
-             --docdir=/usr/share/doc/llvm-3.7.1 &&
+             --docdir=/usr/share/doc/llvm-${pkgver} &&
 make
 
 }

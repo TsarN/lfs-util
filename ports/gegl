@@ -1,0 +1,25 @@
+deps=(babl glib)
+pkgname=gegl
+pkgver=0.2.0
+src=("http://download.gimp.org/pub/gegl/0.2/gegl-0.2.0.tar.bz2" "http://www.linuxfromscratch.org/patches/blfs/svn/gegl-0.2.0-ffmpeg2-1.patch")
+website=
+diskusage="50 MB"
+buildtime="0.9 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+patch -Np1 -i ../gegl-0.2.0-ffmpeg2-1.patch
+./configure --prefix=/usr
+LC_ALL=en_US make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+install -d -v -m755 $installdir/usr/share/gtk-doc/html/gegl/images &&
+install -v -m644 docs/*.{css,html} $installdir/usr/share/gtk-doc/html/gegl &&
+install -v -m644 docs/images/* $installdir/usr/share/gtk-doc/html/gegl/images
+}
+
+function pkgafterinstall {
+cd $installdir
+}

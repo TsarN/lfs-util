@@ -1,0 +1,27 @@
+deps=(xfce4-panel libsoup hicolor-icon-theme)
+pkgname=xfce4-screenshooter
+pkgver=1.8.2
+src=("http://archive.xfce.org/src/apps/$pkgname/1.8/$pkgname-$pkgver.tar.bz2")
+website=
+diskusage=
+buildtime=
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --libexecdir=/usr/lib \
+            --localstatedir=/var \
+            --disable-static \
+            --disable-debug
+make
+}
+
+function pkginstall {
+cd $pkgdir/$pkgname-$pkgver
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

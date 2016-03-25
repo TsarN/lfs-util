@@ -1,0 +1,21 @@
+deps=(mesa)
+pkgname=glu
+pkgver=9.0.0
+src=("ftp://ftp.freedesktop.org/pub/mesa/glu/glu-9.0.0.tar.bz2")
+website=
+diskusage="13 MB"
+buildtime="0.2 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=$XORG_PREFIX --disable-static
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

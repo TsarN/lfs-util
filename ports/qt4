@@ -1,0 +1,135 @@
+deps=(xorg-libraries alsa-lib mesa dbus glib gst-plugins-base icu libjpeg-turbo libmng libpng libtiff openssl sqlite ruby)
+pkgname=qt4
+pkgver=4.8.7
+src=("http://download.qt-project.org/official_releases/qt/4.8/4.8.7/qt-everywhere-opensource-src-4.8.7.tar.gz")
+website=
+diskusage="2.3 GB"
+buildtime="12 SBU, using parallelism=4"
+
+function pkgmake {
+cd $pkgdir/qt-everywhere-opensource-src-$pkgver
+export QT4PREFIX=/opt/qt4
+./configure -prefix           $QT4PREFIX \
+            -sysconfdir       /etc/xdg   \
+            -confirm-license             \
+            -opensource                  \
+            -release                     \
+            -dbus-linked                 \
+            -openssl-linked              \
+            -system-sqlite               \
+            -no-phonon                   \
+            -no-phonon-backend           \
+            -no-webkit                   \
+            -no-openvg                   \
+            -nomake demos                \
+            -nomake examples             \
+            -optimized-qmake 
+make
+}
+
+function pkginstall {
+cd $pkgdir/qt-everywhere-opensource-src-$pkgver
+#make install
+export QT4PREFIX=/opt/qt4
+rm -rf $QT4PREFIX/tests
+find $QT4PREFIX/lib/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
+for file in $QT4PREFIX/lib/libQt*.prl; do
+     sed -r -e '/^QMAKE_PRL_BUILD_DIR/d'    \
+            -e 's/(QMAKE_PRL_LIBS =).*/\1/' \
+            -i $file
+done
+
+# Installing icons & .desktop files
+
+QT4BINDIR=$QT4PREFIX/bin
+
+install -v -Dm644 src/gui/dialogs/images/qtlogo-64.png \
+                  $installdir/usr/share/pixmaps/qt4logo.png       &&
+
+install -v -Dm644 tools/assistant/tools/assistant/images/assistant-128.png \
+                  $installdir/usr/share/pixmaps/assistant-qt4.png &&
+
+install -v -Dm644 tools/designer/src/designer/images/designer.png \
+                  $installdir/usr/share/pixmaps/designer-qt4.png  &&
+
+install -v -Dm644 tools/linguist/linguist/images/icons/linguist-128-32.png \
+                  $installdir/usr/share/pixmaps/linguist-qt4.png  &&
+
+install -v -Dm644 tools/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+                  $installdir/usr/share/pixmaps/qdbusviewer-qt4.png &&
+
+install -dm755 $installdir/usr/share/applications &&
+
+cat > $installdir/usr/share/applications/assistant-qt4.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Assistant
+Comment=Shows Qt4 documentation and examples
+Exec=$QT4BINDIR/assistant
+Icon=assistant-qt4.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+EOF
+
+cat > $installdir/usr/share/applications/designer-qt4.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Designer
+Comment=Design GUIs for Qt4 applications
+Exec=$QT4BINDIR/designer
+Icon=designer-qt4.png
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+
+cat > $installdir/usr/share/applications/linguist-qt4.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Linguist
+Comment=Add translations to Qt4 applications
+Exec=$QT4BINDIR/linguist
+Icon=linguist-qt4.png
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+
+cat > $installdir/usr/share/applications/qdbusviewer-qt4.desktop << EOF
+[Desktop Entry]
+Name=Qt4 QDbusViewer
+GenericName=D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=$QT4BINDIR/qdbusviewer
+Icon=qdbusviewer-qt4.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Debugger;
+EOF
+
+cat > $installdir/usr/share/applications/qtconfig-qt4.desktop << EOF
+[Desktop Entry]
+Name=Qt4 Config
+Comment=Configure Qt4 behavior, styles, fonts
+Exec=$QT4BINDIR/qtconfig
+Icon=qt4logo.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Settings;
+EOF
+
+mkdir -p $installdir/usr/bin
+
+for file in moc uic rcc qmake lconvert lrelease lupdate; do
+  ln -sfrvn $QT4BINDIR/$file $installdir/usr/bin/$file-qt4
+done
+}
+
+function pkgafterinstall {
+cd $installdir
+}

@@ -1,14 +1,14 @@
 deps=(nspr sqlite)
 pkgname=nss
-pkgver=3.23.1
-src=("https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_23_1_RTM/src/nss-3.23.1.tar.gz" "http://www.linuxfromscratch.org/patches/blfs/svn/nss-3.23.1-standalone-1.patch")
+pkgver=3.23
+src=("https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_23_RTM/src/nss-3.23.tar.gz" "http://www.linuxfromscratch.org/patches/blfs/svn/nss-3.23-standalone-1.patch")
 website=
-diskusage="87 MB"
+diskusage="96 MB"
 buildtime="1.0 SBU"
 
 function pkgmake {
 cd $pkgdir/$pkgname-$pkgver
-patch -Np1 -i ../nss-3.23.1-standalone-1.patch &&
+patch -Np1 -i ../nss-3.23-standalone-1.patch &&
 cd nss &&
 make -j1 BUILD_OPT=1                  \
 NSPR_INCLUDE_DIR=/usr/include/nspr  \

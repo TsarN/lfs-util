@@ -1,0 +1,21 @@
+deps=(libxfce4ui vte)
+pkgname=xfce4-terminal
+pkgver=0.6.3
+src=("http://archive.xfce.org/src/apps/xfce4-terminal/0.6/xfce4-terminal-0.6.3.tar.bz2")
+website=
+diskusage="14 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}

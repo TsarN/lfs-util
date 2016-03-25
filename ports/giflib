@@ -1,0 +1,22 @@
+deps=()
+pkgname=giflib
+pkgver=5.1.3
+src=("http://downloads.sourceforge.net/giflib/giflib-5.1.3.tar.bz2")
+website=
+diskusage="7.6 MB"
+buildtime="0.1 SBU"
+
+function pkgmake {
+cd $pkgdir/$pkgname-$pkgver
+./configure --prefix=/usr --disable-static
+sed 's/^have_xmlto.*/have_xmlto = no/' -i Makefile
+make
+}
+
+function pkginstall {
+make DESTDIR=$installdir install
+}
+
+function pkgafterinstall {
+cd $installdir
+}
